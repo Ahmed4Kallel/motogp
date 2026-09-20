@@ -392,6 +392,22 @@
 <script>
 var DB={motos:JSON.parse(JSON.stringify(MOTOS)),nextId:100};
 
+// AUTH CHECK
+(function(){
+  var user=null;
+  try{user=JSON.parse(localStorage.getItem('motogp_user'))}catch(e){}
+  if(!user||user.role!=='admin'){window.location.href='login.html';return}
+  var av=document.querySelector('.sidebar-user-avatar');
+  var nm=document.querySelector('.sidebar-user-info .name');
+  if(av)av.textContent=user.avatar||'AD';
+  if(nm)nm.textContent=user.name||'Admin';
+})();
+function dashLogout(){localStorage.removeItem('motogp_user');window.location.href='index.html'}
+document.querySelector('.sidebar-user').style.cursor='pointer';
+document.querySelector('.sidebar-user').addEventListener('click',function(){
+  if(confirm('Se deconnecter?'))dashLogout();
+});
+
 function getDBUsers(){return JSON.parse(localStorage.getItem('motogp_users')||'[]')}
 function getDBBookings(){return JSON.parse(localStorage.getItem('motogp_bookings')||'[]')}
 function getDBStats(){

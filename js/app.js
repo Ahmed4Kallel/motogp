@@ -281,20 +281,23 @@ function registerUser(data){
 }
 function logoutUser(){localStorage.removeItem('motogp_user');window.location.href='index.html'}
 function updateNavAuth(){
-  var user=getCurrentUser(),navActions=$('.nav-actions'),mobileLinks=$('.mobile-menu');
+  var user=getCurrentUser();
+  if(!user)return;
+  var navActions=$('.nav-actions');
   if(!navActions)return;
-  var authBtns=navActions.querySelector('.btn-outline');if(!authBtns)return;
-  if(user){
-    var dashLink=user.role==='admin'?'dashboard.html':'profile.html';
-    authBtns.outerHTML='<a href="'+dashLink+'" class="btn btn-outline btn-sm" style="display:flex;align-items:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'+(user.role==='admin'?'Dashboard':'Mon Profil')+'</a>';
-    var primaryBtn=navActions.querySelector('.btn-primary');
-    if(primaryBtn){primaryBtn.outerHTML='<a href="#" class="btn btn-primary btn-sm" onclick="logoutUser();return false;">Deconnexion</a>'}
-  }
+  var dashLink=user.role==='admin'?'dashboard.html':'profile.html';
+  var label=user.role==='admin'?'Dashboard':'Mon Profil';
+  navActions.innerHTML='<a href="'+dashLink+'" class="btn btn-outline btn-sm" style="display:flex;align-items:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'+label+'</a><a href="#" class="btn btn-primary btn-sm" onclick="logoutUser();return false;">Deconnexion</a>';
+  var mobileLinks=$('.mobile-menu');
   if(mobileLinks){
-    var mAuth=mobileLinks.querySelector('.btn-outline');
-    if(mAuth&&!user){
-      mAuth.outerHTML='<a href="'+(user?dashLink:'login.html')+'" class="btn btn-outline" style="width:100%;justify-content:center;">'+(user?(user.role==='admin'?'Dashboard':'Mon Profil'):'Connexion')+'</a>';
-    }
+    var mBtns=mobileLinks.querySelectorAll('.btn-outline, .btn-primary');
+    mBtns.forEach(function(b){b.remove()});
+    var divider=mobileLinks.querySelector('.mobile-menu-divider');
+    var a1=document.createElement('a');a1.href=dashLink;a1.className='btn btn-outline';a1.style.cssText='width:100%;justify-content:center;';a1.textContent=label;
+    var a2=document.createElement('a');a2.href='#';a2.className='btn btn-primary';a2.style.cssText='width:100%;justify-content:center;';a2.textContent='Deconnexion';
+    a2.addEventListener('click',function(e){e.preventDefault();logoutUser()});
+    if(divider){divider.parentNode.insertBefore(a1,divider.nextSibling);a1.parentNode.insertBefore(a2,a1.nextSibling)}
+    else{mobileLinks.appendChild(a1);mobileLinks.appendChild(a2)}
   }
 }
 function initLoginForm(){
