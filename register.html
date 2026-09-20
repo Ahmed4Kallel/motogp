@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription Premium - MotoGp Nabeul</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/extra.css"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0F0F1A; color: #fff; }
+
+    .auth-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .auth-visual {
+      position: relative;
+      background: linear-gradient(135deg, #1A1A2E 0%, #0F0F1A 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .auth-visual::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255,77,0,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: pulse-glow 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .auth-visual-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .auth-visual-content img {
+      max-width: 420px;
+      width: 100%;
+      margin-bottom: 32px;
+      filter: drop-shadow(0 20px 60px rgba(255,77,0,0.3));
+    }
+
+    .auth-visual-content h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .auth-visual-content h2 span {
+      background: linear-gradient(135deg, #FF4D00, #FF6B35);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .auth-visual-content p {
+      color: #9CA3AF;
+      font-size: 1.05rem;
+      max-width: 360px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .auth-visual .premium-badge {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(30,30,50,0.8);
+      border: 1px solid #2D2D44;
+      border-radius: 12px;
+      padding: 14px 24px;
+      backdrop-filter: blur(10px);
+      z-index: 3;
+    }
+
+    .premium-badge .icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,77,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .premium-badge .text { font-size: 0.85rem; }
+    .premium-badge .text strong { color: #FF4D00; }
+
+    .auth-form-side {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      overflow-y: auto;
+      max-height: 100vh;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 480px;
+      background: #1E1E32;
+      border: 1px solid #2D2D44;
+      border-radius: 16px;
+      padding: 44px 36px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .auth-card .logo {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .auth-card .logo a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.6rem;
+      font-weight: 800;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .auth-card .logo a span {
+      background: linear-gradient(135deg, #FF4D00, #FF6B35);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .auth-card h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .auth-card .subtitle {
+      text-align: center;
+      color: #9CA3AF;
+      margin-bottom: 28px;
+      font-size: 0.92rem;
+    }
+
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 32px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: #2D2D44;
+      color: #9CA3AF;
+      transition: all 0.3s ease;
+    }
+
+    .step.active .step-num {
+      background: linear-gradient(135deg, #FF4D00, #FF6B35);
+      color: #fff;
+    }
+
+    .step.done .step-num {
+      background: #10B981;
+      color: #fff;
+    }
+
+    .step-label {
+      font-size: 0.8rem;
+      color: #9CA3AF;
+    }
+
+    .step.active .step-label {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .step-line {
+      width: 60px;
+      height: 2px;
+      background: #2D2D44;
+      margin: 0 12px;
+      transition: background 0.3s ease;
+    }
+
+    .step-line.done {
+      background: #10B981;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #9CA3AF;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 10px;
+      border: 1px solid #2D2D44;
+      background: #1A1A2E;
+      color: #fff;
+      font-size: 0.92rem;
+      outline: none;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #FF4D00;
+    }
+
+    .form-group select option {
+      background: #1A1A2E;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #FF4D00, #FF6B35);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255,77,0,0.4);
+    }
+
+    .booking-summary {
+      background: #1A1A2E;
+      border-radius: 10px;
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    .booking-summary .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 0;
+      font-size: 0.88rem;
+      color: #9CA3AF;
+    }
+
+    .booking-summary .row.total {
+      border-top: 1px solid #2D2D44;
+      padding-top: 12px;
+      margin-top: 8px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #fff;
+    }
+
+    .booking-summary .row.total span:last-child {
+      color: #FF4D00;
+    }
+
+    .terms-check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .terms-check input {
+      accent-color: #FF4D00;
+      width: 18px;
+      height: 18px;
+    }
+
+    .terms-check label {
+      font-size: 0.82rem;
+      color: #9CA3AF;
+      cursor: pointer;
+    }
+
+    .auth-link {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 0.88rem;
+      color: #9CA3AF;
+    }
+
+    .auth-link a {
+      color: #FF4D00;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .auth-link a:hover {
+      text-decoration: underline;
+    }
+
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .success-screen.active {
+      display: block;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(16,185,129,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 2.2rem;
+      animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes pop-in {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    .success-screen h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .success-screen p {
+      color: #9CA3AF;
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+    }
+
+    #step-1.hidden,
+    #step-2.hidden {
+      display: none;
+    }
+
+    @media (max-width: 1024px) {
+      .auth-page {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-visual {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .auth-card {
+        padding: 32px 20px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-page">
+
+    <div class="auth-visual">
+      <div class="auth-visual-content">
+        <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500&h=400&fit=crop" alt="Moto Premium"/>
+        <h2>Rejoignez <span>MotoGp Nabeul</span></h2>
+        <p>Acces illimite a notre flotte premium de motos. Choisissez votre formule et commencez a rouler.</p>
+      </div>
+      <div class="premium-badge">
+        <div class="icon">&#127942;</div>
+        <div class="text"><strong>150+</strong> motos disponibles</div>
+      </div>
+    </div>
+
+    <div class="auth-form-side">
+      <div class="auth-card">
+
+        <div class="logo">
+          <a href="index.html">Moto<span>Gp</span></a>
+        </div>
+
+        <h2>Creer un compte</h2>
+        <p class="subtitle">Rejoignez la communaute MotoGp Nabeul</p>
+
+        <div class="steps">
+          <div class="step active" id="step-indicator-1">
+            <div class="step-num">1</div>
+            <span class="step-label">Infos</span>
+          </div>
+          <div class="step-line" id="step-line-1"></div>
+          <div class="step" id="step-indicator-2">
+            <div class="step-num">2</div>
+            <span class="step-label">Paiement</span>
+          </div>
+        </div>
+
+        <div id="step-1">
+          <form id="register-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Prenom</label>
+                <input type="text" name="firstName" placeholder="Prenom" required/>
+              </div>
+              <div class="form-group">
+                <label>Nom</label>
+                <input type="text" name="lastName" placeholder="Nom" required/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" name="email" placeholder="votre@email.com" required/>
+            </div>
+            <div class="form-group">
+              <label>Telephone</label>
+              <input type="tel" name="phone" placeholder="+216 XX XXX XXX" required/>
+            </div>
+            <div class="form-group">
+              <label>Mot de passe</label>
+              <input type="password" name="password" placeholder="Minimum 8 caracteres" required minlength="8"/>
+            </div>
+            <div class="form-group">
+              <label>Formule d'abonnement</label>
+              <select name="plan" required>
+                <option value="essentiel">Essentiel - 29 DT/mois</option>
+                <option value="premium" selected>Premium - 59 DT/mois (Populaire)</option>
+                <option value="vip">VIP - 99 DT/mois</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Continuer vers le paiement</button>
+          </form>
+        </div>
+
+        <div id="step-2" class="hidden">
+          <form id="payment-form">
+            <div class="form-group">
+              <label>Numero de carte</label>
+              <input type="text" name="cardNumber" placeholder="1234 5678 9012 3456" required maxlength="19"/>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date d'expiration</label>
+                <input type="text" name="expiry" placeholder="MM/AA" required maxlength="5"/>
+              </div>
+              <div class="form-group">
+                <label>CVV</label>
+                <input type="text" name="cvv" placeholder="123" required maxlength="4"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Nom sur la carte</label>
+              <input type="text" name="cardName" placeholder="Nom complet" required/>
+            </div>
+
+            <div class="booking-summary">
+              <div class="row"><span>Formule</span><span id="plan-name">Premium</span></div>
+              <div class="row"><span>Periode</span><span>Mensuel</span></div>
+              <div class="row total"><span>Total a payer</span><span id="plan-price">59 DT/mois</span></div>
+            </div>
+
+            <div class="terms-check">
+              <input type="checkbox" id="terms" required/>
+              <label for="terms">J'accepte les conditions generales d'utilisation</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Payer et creer mon compte</button>
+          </form>
+        </div>
+
+        <div class="success-screen" id="success-screen">
+          <div class="success-icon">&#10003;</div>
+          <h2>Compte cree !</h2>
+          <p>Bienvenue sur MotoGp Nabeul. Votre abonnement Premium est actif.</p>
+          <a href="login.html" class="btn btn-primary" style="text-decoration:none;">Se connecter</a>
+        </div>
+
+        <p class="auth-link" id="login-link">Deja un compte ? <a href="login.html">Se connecter</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const planParam = params.get('plan');
+      if (planParam) {
+        const sel = document.querySelector('[name="plan"]');
+        if (sel) sel.value = planParam;
+        updateSummary(planParam);
+      }
+
+      const planSelect = document.querySelector('[name="plan"]');
+      planSelect.addEventListener('change', () => {
+        updateSummary(planSelect.value);
+      });
+
+      function updateSummary(plan) {
+        const prices = { essentiel: '29 DT/mois', premium: '59 DT/mois', vip: '99 DT/mois' };
+        const names = { essentiel: 'Essentiel', premium: 'Premium', vip: 'VIP' };
+        document.getElementById('plan-name').textContent = names[plan] || 'Premium';
+        document.getElementById('plan-price').textContent = prices[plan] || '59 DT/mois';
+      }
+
+      document.getElementById('register-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        document.getElementById('step-1').classList.add('hidden');
+        document.getElementById('step-2').classList.remove('hidden');
+
+        document.getElementById('step-indicator-1').classList.remove('active');
+        document.getElementById('step-indicator-1').classList.add('done');
+        document.getElementById('step-line-1').classList.add('done');
+        document.getElementById('step-indicator-2').classList.add('active');
+      });
+
+      document.getElementById('payment-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        document.getElementById('step-2').classList.add('hidden');
+        document.getElementById('step-indicator-2').classList.remove('active');
+        document.getElementById('step-indicator-2').classList.add('done');
+
+        document.getElementById('success-screen').classList.add('active');
+        document.getElementById('login-link').style.display = 'none';
+      });
+    });
+  </script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

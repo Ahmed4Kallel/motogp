@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MotoGp Nabeul - Premium Fleet</title>
+  <meta name="description" content="Browse our premium motorcycle fleet. Find the perfect ride for exploring Nabeul.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/extra.css"/>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <a href="index.html" class="nav-logo">Moto<span>Gp</span></a>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="motorcycles.html" class="active">Motos</a>
+      <a href="index.html#discovery">Explorer</a>
+      <a href="index.html#pricing">Abonnement</a>
+    </div>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-outline btn-sm">Connexion</a>
+      <a href="register.html" class="btn btn-primary btn-sm">S'inscrire</a>
+    </div>
+    <button class="nav-menu-btn" id="nav-menu-btn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-inner">
+    <a href="index.html" class="mobile-menu-link">Accueil</a>
+    <a href="motorcycles.html" class="mobile-menu-link">Motos</a>
+    <a href="index.html#discovery" class="mobile-menu-link">Explorer</a>
+    <a href="index.html#pricing" class="mobile-menu-link">Abonnement</a>
+    <div class="mobile-menu-divider"></div>
+    <a href="login.html" class="btn btn-outline" style="width:100%;justify-content:center;">Connexion</a>
+    <a href="register.html" class="btn btn-primary" style="width:100%;justify-content:center;">S'inscrire</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg" id="hero-bg"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-grain"></div>
+  <div class="container hero-content">
+    <div class="hero-tag"><span class="dot"></span> NABEUL, TUNISIE</div>
+    <h1 class="hero-title">
+      <span class="line"><span class="accent">PREMIUM</span></span>
+      <span class="line"><span>FLEET</span></span>
+    </h1>
+    <p class="hero-subtitle">Find your perfect ride for exploring Nabeul</p>
+  </div>
+</section>
+
+<!-- MOTORCYCLE CATALOGUE -->
+<section class="section" id="motos">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">OUR FLEET</div>
+      <h2 class="section-title">Choose your ride</h2>
+      <p class="section-desc">From city scooters to adventure beasts, find the perfect motorcycle for your Nabeul journey.</p>
+    </div>
+    <div class="tabs" id="moto-tabs">
+      <button class="tab-btn active" data-filter="all">All</button>
+      <button class="tab-btn" data-filter="Naked">Naked</button>
+      <button class="tab-btn" data-filter="Sport">Sport</button>
+      <button class="tab-btn" data-filter="Adventure">Adventure</button>
+      <button class="tab-btn" data-filter="Scooter">Scooter</button>
+    </div>
+    <div class="motos-showcase" id="motos-grid"></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="padding:0;">
+  <div class="container">
+    <div class="cta-section reveal">
+      <h2>Ready to ride?</h2>
+      <p>Join hundreds of riders exploring Nabeul every day.</p>
+      <a href="register.html" class="btn btn-white btn-lg">Get Started Now</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>Moto<span>Gp</span></h3>
+        <p>The premium motorcycle rental and city discovery platform for Nabeul, Tunisia.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <a href="index.html">Accueil</a>
+        <a href="motorcycles.html">Motos</a>
+        <a href="index.html#discovery">Explorer</a>
+        <a href="register.html">S'inscrire</a>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="#">Location courte duree</a>
+        <a href="#">Location longue duree</a>
+        <a href="#">Abonnement Premium</a>
+        <a href="#">Livraison</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="tel:+21672280000">+216 72 280 000</a>
+        <a href="mailto:contact@motogp-nabeul.tn">contact@motogp-nabeul.tn</a>
+        <a href="#">Nabeul, Tunisie</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 MotoGp Nabeul. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="bottom-nav" id="bottom-nav">
+  <a href="index.html" class="bottom-nav-item" data-section="hero">
+    <span class="bottom-nav-icon">&#127968;</span><span class="bottom-nav-label">Home</span>
+  </a>
+  <a href="motorcycles.html" class="bottom-nav-item active" data-section="motos">
+    <span class="bottom-nav-icon">&#128661;</span><span class="bottom-nav-label">Motos</span>
+  </a>
+  <a href="index.html#discovery" class="bottom-nav-item" data-section="discovery">
+    <span class="bottom-nav-icon">&#128205;</span><span class="bottom-nav-label">Explorer</span>
+  </a>
+  <a href="login.html" class="bottom-nav-item">
+    <span class="bottom-nav-icon">&#128100;</span><span class="bottom-nav-label">Account</span>
+  </a>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

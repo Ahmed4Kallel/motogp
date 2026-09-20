@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon Profil - MotoGp Nabeul</title>
+  <meta name="description" content="Votre tableau de bord MotoGp Nabeul - Gerez votre abonnement, reservations et historique.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/extra.css"/>
+  <style>
+    .profile-page {
+      padding-top: var(--nav-height);
+      min-height: 100vh;
+      background: var(--bg);
+    }
+    .profile-hero {
+      background: linear-gradient(135deg, var(--bg) 0%, #0D0D18 50%, var(--bg) 100%);
+      padding: var(--space-3xl) 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(232, 81, 26, 0.08), transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(201, 169, 110, 0.05), transparent 50%);
+    }
+    .profile-hero-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2xl);
+      flex-wrap: wrap;
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: var(--fw-bold);
+      color: var(--white);
+      flex-shrink: 0;
+      border: 3px solid rgba(232, 81, 26, 0.3);
+      box-shadow: 0 8px 32px rgba(232, 81, 26, 0.25);
+    }
+    .profile-info h1 {
+      font-family: var(--font-heading);
+      font-size: var(--fs-h2);
+      font-weight: var(--fw-bold);
+      color: var(--text);
+      margin-bottom: var(--space-xs);
+    }
+    .profile-info p {
+      font-size: var(--fs-small);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .profile-info p svg {
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .profile-meta {
+      display: flex;
+      gap: var(--space-xl);
+      margin-top: var(--space-md);
+      flex-wrap: wrap;
+    }
+    .profile-meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      background: var(--surface);
+      padding: 0.4em 0.9em;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+    }
+    .profile-meta-item svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-lg);
+      margin-bottom: var(--space-2xl);
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition-base), border-color var(--transition-base);
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-light);
+    }
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--stat-color, var(--primary));
+    }
+    .stat-card-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      background: rgba(232, 81, 26, 0.1);
+      margin-bottom: var(--space-md);
+      font-size: 1.3rem;
+    }
+    .stat-card-icon.icon-premium { background: rgba(201, 169, 110, 0.1); }
+    .stat-card-icon.icon-rides { background: rgba(59, 130, 246, 0.1); }
+    .stat-card-icon.icon-spent { background: rgba(34, 197, 94, 0.1); }
+    .stat-card-icon.icon-active { background: rgba(232, 81, 26, 0.1); }
+    .stat-card-value {
+      font-family: var(--font-heading);
+      font-size: var(--fs-h3);
+      font-weight: var(--fw-bold);
+      color: var(--text);
+      margin-bottom: var(--space-xs);
+    }
+    .stat-card-label {
+      font-size: var(--fs-small);
+      color: var(--text-muted);
+    }
+
+    /* Subscription Card */
+    .subscription-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(201, 169, 110, 0.25);
+      border-radius: var(--radius-lg);
+      padding: var(--space-2xl);
+      margin-bottom: var(--space-2xl);
+      position: relative;
+      overflow: hidden;
+    }
+    .subscription-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201, 169, 110, 0.05), transparent 50%);
+      pointer-events: none;
+    }
+    .subscription-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-xl);
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      position: relative;
+    }
+    .subscription-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: 0.4em 1em;
+      background: var(--gradient-accent);
+      color: var(--bg);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-bold);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-radius: var(--radius-full);
+    }
+    .subscription-price {
+      text-align: right;
+    }
+    .subscription-price .amount {
+      font-family: var(--font-heading);
+      font-size: var(--fs-h2);
+      font-weight: var(--fw-bold);
+      color: var(--accent);
+    }
+    .subscription-price .period {
+      font-size: var(--fs-small);
+      color: var(--text-muted);
+      display: block;
+    }
+    .subscription-details {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2xl);
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-xl);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      position: relative;
+    }
+    .subscription-detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .subscription-detail-item .label {
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .subscription-detail-item .value {
+      font-size: var(--fs-small);
+      font-weight: var(--fw-semibold);
+      color: var(--text);
+    }
+    .subscription-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      position: relative;
+    }
+    .feature-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.4em 0.9em;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-medium);
+      color: var(--text-secondary);
+    }
+    .feature-badge svg {
+      width: 12px;
+      height: 12px;
+      color: #22C55E;
+    }
+
+    /* Tables */
+    .profile-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-xl);
+      overflow: hidden;
+    }
+    .profile-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-xl) var(--space-2xl);
+      border-bottom: 1px solid var(--border);
+    }
+    .profile-section-header h3 {
+      font-family: var(--font-heading);
+      font-size: var(--fs-h4);
+      font-weight: var(--fw-bold);
+      color: var(--text);
+    }
+    .profile-section-header .view-all {
+      font-size: var(--fs-small);
+      color: var(--primary);
+      font-weight: var(--fw-medium);
+      transition: color var(--transition-fast);
+    }
+    .profile-section-header .view-all:hover {
+      color: var(--primary-light);
+    }
+    .profile-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .profile-table th {
+      text-align: left;
+      padding: var(--space-md) var(--space-xl);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .profile-table td {
+      padding: var(--space-md) var(--space-xl);
+      font-size: var(--fs-small);
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .profile-table tr:last-child td {
+      border-bottom: none;
+    }
+    .profile-table tr:hover td {
+      background: var(--glass-light);
+    }
+    .profile-table .moto-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    .profile-table .moto-thumb {
+      width: 48px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .profile-table .moto-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-table .moto-name {
+      font-weight: var(--fw-semibold);
+      color: var(--text);
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0.25em 0.7em;
+      border-radius: var(--radius-full);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-semibold);
+    }
+    .status-active {
+      background: rgba(34, 197, 94, 0.1);
+      color: #22C55E;
+    }
+    .status-completed {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3B82F6;
+    }
+    .status-cancelled {
+      background: rgba(239, 68, 68, 0.1);
+      color: #EF4444;
+    }
+    .status-pending {
+      background: rgba(234, 179, 8, 0.1);
+      color: #EAB308;
+    }
+
+    /* Payment method badge */
+    .payment-method {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.25em 0.6em;
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      font-size: var(--fs-xs);
+      color: var(--text-secondary);
+    }
+    .payment-method svg {
+      width: 16px;
+      height: 12px;
+    }
+
+    /* Favorite Places */
+    .places-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-lg);
+      padding: var(--space-xl) var(--space-2xl);
+    }
+    .place-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: transform var(--transition-base), border-color var(--transition-base);
+    }
+    .place-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(232, 81, 26, 0.2);
+    }
+    .place-card-img {
+      width: 100%;
+      height: 160px;
+      overflow: hidden;
+      background: var(--bg-card);
+    }
+    .place-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-out);
+    }
+    .place-card:hover .place-card-img img {
+      transform: scale(1.06);
+    }
+    .place-card-body {
+      padding: var(--space-md);
+    }
+    .place-card-body h4 {
+      font-size: var(--fs-small);
+      font-weight: var(--fw-semibold);
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .place-card-body p {
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .place-card-rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: var(--space-sm);
+      font-size: var(--fs-xs);
+      color: var(--accent);
+    }
+
+    /* Content wrapper */
+    .profile-content {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: var(--space-2xl) clamp(1rem, 4vw, 2rem);
+    }
+
+    /* Two-column layout for tables + sidebar */
+    .profile-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+      margin-bottom: var(--space-xl);
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+      padding: var(--space-xl) var(--space-2xl);
+    }
+    .quick-action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-lg) var(--space-md);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-medium);
+      color: var(--text-secondary);
+      text-align: center;
+      transition: all var(--transition-fast);
+    }
+    .quick-action-btn:hover {
+      background: rgba(232, 81, 26, 0.05);
+      border-color: rgba(232, 81, 26, 0.2);
+      color: var(--primary);
+    }
+    .quick-action-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .profile-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .profile-hero-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+      .profile-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 1.8rem;
+      }
+      .profile-info p {
+        justify-content: center;
+      }
+      .profile-meta {
+        justify-content: center;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .subscription-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      .subscription-price {
+        text-align: center;
+      }
+      .subscription-details {
+        justify-content: center;
+      }
+      .subscription-features {
+        justify-content: center;
+      }
+      .profile-section-header {
+        padding: var(--space-md) var(--space-lg);
+        flex-direction: column;
+        gap: var(--space-sm);
+        text-align: center;
+      }
+      .profile-table th,
+      .profile-table td {
+        padding: var(--space-sm) var(--space-md);
+      }
+      .places-grid {
+        grid-template-columns: 1fr;
+        padding: var(--space-md) var(--space-lg);
+      }
+      .quick-actions {
+        grid-template-columns: 1fr;
+        padding: var(--space-md) var(--space-lg);
+      }
+      .profile-content {
+        padding: var(--space-lg) var(--space-md);
+      }
+      .profile-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .stat-card {
+        padding: var(--space-lg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
+
+<!-- NAVIGATION -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <a href="index.html" class="nav-logo">Moto<span>Gp</span></a>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="motorcycles.html">Motos</a>
+      <a href="map.html">Explorer Nabeul</a>
+      <a href="index.html#pricing">Abonnement</a>
+    </div>
+    <div class="nav-actions">
+      <a href="profile.html" class="btn btn-outline btn-sm" style="display:flex;align-items:center;gap:8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Ahmed
+      </a>
+      <a href="index.html" class="btn btn-primary btn-sm">Deconnexion</a>
+    </div>
+    <button class="nav-menu-btn" id="nav-menu-btn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-inner">
+    <a href="index.html" class="mobile-menu-link">Accueil</a>
+    <a href="motorcycles.html" class="mobile-menu-link">Motos</a>
+    <a href="map.html" class="mobile-menu-link">Explorer Nabeul</a>
+    <a href="index.html#pricing" class="mobile-menu-link">Abonnement</a>
+    <div class="mobile-menu-divider"></div>
+    <a href="profile.html" class="btn btn-outline" style="width:100%;justify-content:center;">Mon Profil</a>
+    <a href="index.html" class="btn btn-primary" style="width:100%;justify-content:center;">Deconnexion</a>
+  </div>
+</div>
+
+<!-- PROFILE HERO -->
+<section class="profile-hero">
+  <div class="container">
+    <div class="profile-hero-inner">
+      <div class="profile-avatar">AB</div>
+      <div class="profile-info">
+        <h1>Ahmed Ben Ali</h1>
+        <p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          ahmed.benali@email.com
+          <span style="margin:0 4px;color:var(--border-light);">|</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          +216 72 280 000
+        </p>
+        <div class="profile-meta">
+          <div class="profile-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Premium Membre
+          </div>
+          <div class="profile-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Membre depuis Mars 2025
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROFILE CONTENT -->
+<main class="profile-content">
+
+  <!-- STATS GRID -->
+  <div class="stats-grid">
+    <div class="stat-card" style="--stat-color: var(--accent);">
+      <div class="stat-card-icon icon-premium">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="stat-card-value">Premium</div>
+      <div class="stat-card-label">Abonnement Actif</div>
+    </div>
+    <div class="stat-card" style="--stat-color: #3B82F6;">
+      <div class="stat-card-icon icon-rides">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8l4-2v8l-4-2"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <div class="stat-card-value">5</div>
+      <div class="stat-card-label">Total Locations</div>
+    </div>
+    <div class="stat-card" style="--stat-color: #22C55E;">
+      <div class="stat-card-icon icon-spent">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div class="stat-card-value">1,240 DT</div>
+      <div class="stat-card-label">Total Depense</div>
+    </div>
+    <div class="stat-card" style="--stat-color: var(--primary);">
+      <div class="stat-card-icon icon-active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="stat-card-value">1</div>
+      <div class="stat-card-label">Reservation Active</div>
+    </div>
+  </div>
+
+  <!-- SUBSCRIPTION CARD -->
+  <div class="subscription-card">
+    <div class="subscription-header">
+      <div>
+        <div class="subscription-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Plan Premium
+        </div>
+        <p style="font-size:var(--fs-small);color:var(--text-muted);margin-top:var(--space-sm);">Votre abonnement actuel</p>
+      </div>
+      <div class="subscription-price">
+        <span class="amount">59</span>
+        <span class="period">DT / mois</span>
+      </div>
+    </div>
+    <div class="subscription-details">
+      <div class="subscription-detail-item">
+        <span class="label">Statut</span>
+        <span class="value" style="color:#22C55E;">Actif</span>
+      </div>
+      <div class="subscription-detail-item">
+        <span class="label">Date de debut</span>
+        <span class="value">15 Mars 2025</span>
+      </div>
+      <div class="subscription-detail-item">
+        <span class="label">Prochaine renewal</span>
+        <span class="value">15 Octobre 2026</span>
+      </div>
+      <div class="subscription-detail-item">
+        <span class="label">Mode de paiement</span>
+        <span class="value">
+          <span class="payment-method">
+            <svg viewBox="0 0 24 16" fill="currentColor"><rect width="24" height="16" rx="2" fill="#1a1f36"/><text x="12" y="11" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">VISA</text></svg>
+            ***4821
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="subscription-features">
+      <div class="feature-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Locations illimitees
+      </div>
+      <div class="feature-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Toutes les motos
+      </div>
+      <div class="feature-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Support prioritaire 24/7
+      </div>
+      <div class="feature-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Annulation gratuite 48h
+      </div>
+      <div class="feature-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Casque offert
+      </div>
+      <div class="feature-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Livraison gratuite
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="profile-section" style="margin-bottom:var(--space-2xl);">
+    <div class="profile-section-header">
+      <h3>Actions Rapides</h3>
+    </div>
+    <div class="quick-actions">
+      <a href="motorcycles.html" class="quick-action-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8l4-2v8l-4-2"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        Louer une Moto
+      </a>
+      <a href="map.html" class="quick-action-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Explorer Nabeul
+      </a>
+      <a href="index.html#pricing" class="quick-action-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Gerer Abonnement
+      </a>
+      <a href="#" class="quick-action-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Parametres
+      </a>
+    </div>
+  </div>
+
+  <!-- RESERVATIONS TABLE -->
+  <div class="profile-section">
+    <div class="profile-section-header">
+      <h3>Mes Reservations</h3>
+      <a href="#" class="view-all">Voir tout &rarr;</a>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="profile-table">
+        <thead>
+          <tr>
+            <th>Moto</th>
+            <th>Date</th>
+            <th>Duree</th>
+            <th>Montant</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="moto-cell">
+                <div class="moto-thumb">
+                  <img src="https://images.unsplash.com/photo-1572195577046-2f25894c06fc?w=200&q=80" alt="Honda Vision 110"/>
+                </div>
+                <div>
+                  <div class="moto-name">Honda Vision 110</div>
+                  <div style="font-size:var(--fs-xs);color:var(--text-muted);">Scooter</div>
+                </div>
+              </div>
+            </td>
+            <td>18 Sept 2026</td>
+            <td>3 jours</td>
+            <td style="font-weight:var(--fw-semibold);color:var(--text);">264 DT</td>
+            <td><span class="status-badge status-active">En cours</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="moto-cell">
+                <div class="moto-thumb">
+                  <img src="https://images.unsplash.com/photo-1610478920409-ec0f58e881a5?w=200&q=80" alt="Yamaha NMAX 125"/>
+                </div>
+                <div>
+                  <div class="moto-name">Yamaha NMAX 125</div>
+                  <div style="font-size:var(--fs-xs);color:var(--text-muted);">Scooter</div>
+                </div>
+              </div>
+            </td>
+            <td>10 Aout 2026</td>
+            <td>5 jours</td>
+            <td style="font-weight:var(--fw-semibold);color:var(--text);">475 DT</td>
+            <td><span class="status-badge status-completed">Terminee</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="moto-cell">
+                <div class="moto-thumb">
+                  <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=200&q=80" alt="SYM Maxsym 400"/>
+                </div>
+                <div>
+                  <div class="moto-name">SYM Maxsym 400</div>
+                  <div style="font-size:var(--fs-xs);color:var(--text-muted);">Maxi-Scooter</div>
+                </div>
+              </div>
+            </td>
+            <td>20 Juin 2026</td>
+            <td>2 jours</td>
+            <td style="font-weight:var(--fw-semibold);color:var(--text);">90 DT</td>
+            <td><span class="status-badge status-completed">Terminee</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="profile-grid-2">
+    <!-- PAYMENT HISTORY -->
+    <div class="profile-section" style="margin-bottom:0;">
+      <div class="profile-section-header">
+        <h3>Historique Paiements</h3>
+        <a href="#" class="view-all">Voir tout &rarr;</a>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="profile-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Montant</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>15 Sept 2026</td>
+              <td>Abonnement Premium - Octobre</td>
+              <td style="font-weight:var(--fw-semibold);color:var(--primary);">59 DT</td>
+            </tr>
+            <tr>
+              <td>18 Sept 2026</td>
+              <td>Location Honda Vision 110 (3j)</td>
+            <td style="font-weight:var(--fw-semibold);color:var(--text);">105 DT</td>
+            </tr>
+            <tr>
+              <td>10 Aout 2026</td>
+              <td>Location Yamaha NMAX 125 (5j)</td>
+            <td style="font-weight:var(--fw-semibold);color:var(--text);">225 DT</td>
+            </tr>
+            <tr>
+              <td>15 Aout 2026</td>
+              <td>Abonnement Premium - Septembre</td>
+              <td style="font-weight:var(--fw-semibold);color:var(--primary);">59 DT</td>
+            </tr>
+            <tr>
+              <td>20 Juin 2026</td>
+              <td>Location SYM Maxsym 400 (2j)</td>
+            <td style="font-weight:var(--fw-semibold);color:var(--text);">120 DT</td>
+            </tr>
+            <tr>
+              <td>15 Juin 2026</td>
+              <td>Abonnement Premium - Juillet</td>
+              <td style="font-weight:var(--fw-semibold);color:var(--primary);">59 DT</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FAVORITE PLACES -->
+    <div class="profile-section" style="margin-bottom:0;">
+      <div class="profile-section-header">
+        <h3>Lieux Favoris</h3>
+        <a href="map.html" class="view-all">Explorer &rarr;</a>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="profile-table">
+          <thead>
+            <tr>
+              <th>Lieu</th>
+              <th>Categorie</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="moto-cell">
+                  <div class="moto-thumb" style="border-radius:50%;">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=100&q=80" alt="Le Pirate" style="border-radius:50%;"/>
+                  </div>
+                  <div>
+                    <div class="moto-name">Le Pirate Restaurant</div>
+                    <div style="font-size:var(--fs-xs);color:var(--text-muted);">Vue mer</div>
+                  </div>
+                </div>
+              </td>
+              <td><span style="color:var(--primary);">Restaurant</span></td>
+              <td style="color:var(--accent);font-weight:var(--fw-semibold);">4.6</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="moto-cell">
+                  <div class="moto-thumb" style="border-radius:50%;">
+                    <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=100&q=80" alt="Cafe des Nattes" style="border-radius:50%;"/>
+                  </div>
+                  <div>
+                    <div class="moto-name">Cafe des Nattes</div>
+                    <div style="font-size:var(--fs-xs);color:var(--text-muted);">Traditionnel</div>
+                  </div>
+                </div>
+              </td>
+              <td><span style="color:var(--accent);">Cafe</span></td>
+              <td style="color:var(--accent);font-weight:var(--fw-semibold);">4.3</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="moto-cell">
+                  <div class="moto-thumb" style="border-radius:50%;">
+                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=100&q=80" alt="Le Cap Nabeul" style="border-radius:50%;"/>
+                  </div>
+                  <div>
+                    <div class="moto-name">Le Cap Nabeul</div>
+                    <div style="font-size:var(--fs-xs);color:var(--text-muted);">Gastronomique</div>
+                  </div>
+                </div>
+              </td>
+              <td><span style="color:var(--primary);">Restaurant</span></td>
+              <td style="color:var(--accent);font-weight:var(--fw-semibold);">4.8</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAVORITE PLACES CARDS -->
+  <div class="profile-section" style="margin-top:var(--space-xl);">
+    <div class="profile-section-header">
+      <h3>Places Decouvertes Recemment</h3>
+      <a href="map.html" class="view-all">Voir la carte &rarr;</a>
+    </div>
+    <div class="places-grid">
+      <div class="place-card">
+        <div class="place-card-img">
+          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&q=80" alt="Le Pirate Restaurant" loading="lazy"/>
+        </div>
+        <div class="place-card-body">
+          <h4>Le Pirate Restaurant</h4>
+          <p>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Nabeul Centre
+          </p>
+          <div class="place-card-rating">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            4.6 &middot; Restaurant
+          </div>
+        </div>
+      </div>
+      <div class="place-card">
+        <div class="place-card-img">
+          <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&q=80" alt="Cafe des Nattes" loading="lazy"/>
+        </div>
+        <div class="place-card-body">
+          <h4>Cafe des Nattes</h4>
+          <p>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Medina Nabeul
+          </p>
+          <div class="place-card-rating">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            4.3 &middot; Cafe
+          </div>
+        </div>
+      </div>
+      <div class="place-card">
+        <div class="place-card-img">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80" alt="Le Cap Nabeul" loading="lazy"/>
+        </div>
+        <div class="place-card-body">
+          <h4>Le Cap Nabeul</h4>
+          <p>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Cap Bon
+          </p>
+          <div class="place-card-rating">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            4.8 &middot; Restaurant
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3 style="font-family:var(--font-heading);font-size:1.6rem;font-weight:700;">Moto<span style="color:var(--primary);">Gp</span></h3>
+        <p>The premium motorcycle rental and city discovery platform for Nabeul, Tunisia.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <a href="index.html">Accueil</a>
+        <a href="motorcycles.html">Motos</a>
+        <a href="map.html">Explorer</a>
+        <a href="profile.html">Profil</a>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="#">Location courte duree</a>
+        <a href="#">Location longue duree</a>
+        <a href="#">Abonnement Premium</a>
+        <a href="#">Livraison</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="tel:+21672280000">+216 72 280 000</a>
+        <a href="mailto:contact@motogp-nabeul.tn">contact@motogp-nabeul.tn</a>
+        <a href="#">Nabeul, Tunisie</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 MotoGp Nabeul. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="bottom-nav" id="bottom-nav">
+  <a href="index.html" class="bottom-nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </a>
+  <a href="motorcycles.html" class="bottom-nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8l4-2v8l-4-2"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    <span>Motos</span>
+  </a>
+  <a href="map.html" class="bottom-nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    <span>Explorer</span>
+  </a>
+  <a href="profile.html" class="bottom-nav-item active">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profil</span>
+  </a>
+</nav>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

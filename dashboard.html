@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoGp Nabeul - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/extra.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:#0f0f1a;color:#e0e0e0;min-height:100vh}
+        .dashboard-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+        .sidebar{background:#1a1a2e;border-right:1px solid #2a2a3e;padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto}
+        .sidebar-logo{padding:0 24px 32px;border-bottom:1px solid #2a2a3e;margin-bottom:24px}
+        .sidebar-logo a{color:#e63946;font-size:1.6rem;font-weight:700;text-decoration:none;letter-spacing:-0.5px}
+        .sidebar-logo a span{color:#f1faee}
+        .sidebar-nav{list-style:none;padding:0 12px}
+        .sidebar-nav li{margin-bottom:4px}
+        .sidebar-nav a{display:flex;align-items:center;gap:12px;padding:12px 16px;color:#a0a0b0;text-decoration:none;border-radius:8px;font-size:.95rem;font-weight:500;transition:all .2s}
+        .sidebar-nav a:hover{background:#2a2a3e;color:#e0e0e0}
+        .sidebar-nav a.active{background:rgba(230,57,70,.15);color:#e63946}
+        .sidebar-nav a svg{width:20px;height:20px;flex-shrink:0}
+        .sidebar-divider{height:1px;background:#2a2a3e;margin:16px 24px}
+        .main-content{padding:32px 40px;overflow-y:auto}
+        .main-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
+        .main-header h1{font-size:1.8rem;font-weight:700;color:#f1faee}
+        .user-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#e63946,#c62828);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:1rem}
+        .section-title{font-size:1.1rem;font-weight:600;color:#f1faee;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:32px}
+        .stat-card{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:12px;padding:24px;transition:transform .2s,border-color .2s}
+        .stat-card:hover{transform:translateY(-2px);border-color:#e63946}
+        .stat-card .stat-label{font-size:.85rem;color:#a0a0b0;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+        .stat-card .stat-value{font-size:1.8rem;font-weight:700;color:#f1faee}
+        .stat-card .stat-change{font-size:.8rem;margin-top:8px}
+        .stat-card .stat-change.positive{color:#2ecc71}
+        .stat-card .stat-change.negative{color:#e63946}
+        .table-container{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:12px;overflow:hidden;margin-bottom:32px}
+        .table-container table{width:100%;border-collapse:collapse}
+        .table-container th{background:#16162a;padding:14px 20px;text-align:left;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;color:#a0a0b0;font-weight:600}
+        .table-container td{padding:14px 20px;border-top:1px solid #2a2a3e;font-size:.92rem}
+        .table-container tr:hover td{background:rgba(230,57,70,.04)}
+        .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:600}
+        .badge-active{background:rgba(46,204,113,.15);color:#2ecc71}
+        .badge-pending{background:rgba(241,196,15,.15);color:#f1c40f}
+        .badge-vip{background:rgba(155,89,182,.15);color:#9b59b6}
+        .badge-premium{background:rgba(230,57,70,.15);color:#e63946}
+        .badge-essentiel{background:rgba(52,152,219,.15);color:#3498db}
+        .badge-paid{background:rgba(46,204,113,.15);color:#2ecc71}
+        .badge-refunded{background:rgba(241,196,15,.15);color:#f1c40f}
+        .badge-failed{background:rgba(230,57,70,.15);color:#e63946}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border:none;border-radius:8px;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .2s}
+        .btn-primary{background:#e63946;color:#fff}
+        .btn-primary:hover{background:#c62828}
+        .btn-sm{padding:6px 14px;font-size:.8rem}
+        .btn-outline{background:transparent;border:1px solid #3a3a4e;color:#a0a0b0}
+        .btn-outline:hover{border-color:#e63946;color:#e63946}
+        .hidden{display:none}
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="index.html">Moto<span>Gp</span></a>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="#" class="active" onclick="showSection('stats')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Stats</a></li>
+                <li><a href="#" onclick="showSection('motorcycles')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M5 17L8 7h8l3 10"/><path d="M8 7l1.5 4h5"/></svg>Motorcycles</a></li>
+                <li><a href="#" onclick="showSection('users')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Users</a></li>
+                <li><a href="#" onclick="showSection('reservations')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Reservations</a></li>
+                <li><a href="#" onclick="showSection('payments')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Payments</a></li>
+                <li><a href="#" onclick="showSection('restaurants')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>Restaurants</a></li>
+            </ul>
+            <div class="sidebar-divider"></div>
+            <ul class="sidebar-nav">
+                <li><a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>Back to Site</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="main-header">
+                <h1>Admin Dashboard</h1>
+                <div class="user-avatar">AD</div>
+            </div>
+
+            <!-- STATS SECTION -->
+            <section id="dash-stats">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Motorcycles</div>
+                        <div class="stat-value">24</div>
+                        <div class="stat-change positive">+3 this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Active Users</div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-change positive">+12 this week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Reservations</div>
+                        <div class="stat-value">89</div>
+                        <div class="stat-change positive">+8 today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Revenue</div>
+                        <div class="stat-value">45,230 DT</div>
+                        <div class="stat-change positive">+15.3%</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MOTORCYCLES SECTION -->
+            <section id="section-motorcycles" class="hidden">
+                <div class="section-title">
+                    <span>Motorcycles</span>
+                    <button class="btn btn-primary" onclick="showAddMotoModal()">+ Add Motorcycle</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Model</th><th>Brand</th><th>Category</th><th>Price/Day</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="motos-table-body">
+                            <tr><td>#001</td><td>MT-07</td><td>Yamaha</td><td>Naked</td><td>80 DT</td><td><span class="badge badge-active">Available</span></td><td><button class="btn btn-sm btn-outline" onclick="editMoto(1)">Edit</button></td></tr>
+                            <tr><td>#002</td><td>CBR 650R</td><td>Honda</td><td>Sport</td><td>95 DT</td><td><span class="badge badge-active">Available</span></td><td><button class="btn btn-sm btn-outline" onclick="editMoto(2)">Edit</button></td></tr>
+                            <tr><td>#003</td><td>Ninja 400</td><td>Kawasaki</td><td>Sport</td><td>70 DT</td><td><span class="badge badge-pending">Rented</span></td><td><button class="btn btn-sm btn-outline" onclick="editMoto(3)">Edit</button></td></tr>
+                            <tr><td>#004</td><td>R 1250 GS</td><td>BMW</td><td>Adventure</td><td>130 DT</td><td><span class="badge badge-active">Available</span></td><td><button class="btn btn-sm btn-outline" onclick="editMoto(4)">Edit</button></td></tr>
+                            <tr><td>#005</td><td>GTS 300</td><td>Vespa</td><td>Scooter</td><td>45 DT</td><td><span class="badge badge-active">Available</span></td><td><button class="btn btn-sm btn-outline" onclick="editMoto(5)">Edit</button></td></tr>
+                            <tr><td>#006</td><td>Monster 821</td><td>Ducati</td><td>Naked</td><td>110 DT</td><td><span class="badge badge-failed">Unavailable</span></td><td><button class="btn btn-sm btn-outline" onclick="editMoto(6)">Edit</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- USERS SECTION -->
+            <section id="section-users" class="hidden">
+                <div class="section-title"><span>Users</span></div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Name</th><th>Email</th><th>Plan</th><th>Status</th><th>Joined</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>#U001</td><td>Ahmed Ben Ali</td><td>ahmed@example.com</td><td><span class="badge badge-premium">Premium</span></td><td><span class="badge badge-active">Active</span></td><td>2025-01-15</td></tr>
+                            <tr><td>#U002</td><td>Fatma Trabelsi</td><td>fatma@example.com</td><td><span class="badge badge-essentiel">Essentiel</span></td><td><span class="badge badge-active">Active</span></td><td>2025-03-22</td></tr>
+                            <tr><td>#U003</td><td>Mohamed Sahli</td><td>mohamed@example.com</td><td><span class="badge badge-vip">VIP</span></td><td><span class="badge badge-active">Active</span></td><td>2024-11-08</td></tr>
+                            <tr><td>#U004</td><td>Amira Bouazizi</td><td>amira@example.com</td><td><span class="badge badge-premium">Premium</span></td><td><span class="badge badge-pending">Pending</span></td><td>2025-06-30</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- RESERVATIONS SECTION -->
+            <section id="section-reservations" class="hidden">
+                <div class="section-title"><span>Reservations</span></div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Client</th><th>Motorcycle</th><th>Date</th><th>Duration</th><th>Total</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>#R001</td><td>Ahmed Ben Ali</td><td>Honda Vision 110</td><td>2026-01-10</td><td>3 days</td><td>105 DT</td><td><span class="badge badge-active">Confirmed</span></td></tr>
+                            <tr><td>#R002</td><td>Fatma Trabelsi</td><td>Yamaha NMAX 125</td><td>2026-01-12</td><td>5 days</td><td>225 DT</td><td><span class="badge badge-pending">Pending</span></td></tr>
+                            <tr><td>#R003</td><td>Mohamed Sahli</td><td>SYM Maxsym 400</td><td>2026-01-15</td><td>7 days</td><td>420 DT</td><td><span class="badge badge-active">Confirmed</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PAYMENTS SECTION -->
+            <section id="section-payments" class="hidden">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Revenue</div>
+                        <div class="stat-value">127,850 DT</div>
+                        <div class="stat-change positive">+18.2%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pending Payments</div>
+                        <div class="stat-value">3,200 DT</div>
+                        <div class="stat-change negative">5 pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Refunds</div>
+                        <div class="stat-value">1,450 DT</div>
+                        <div class="stat-change negative">-2.1%</div>
+                    </div>
+                </div>
+                <div class="section-title"><span>Payment History</span></div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Client</th><th>Type</th><th>Amount</th><th>Date</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>#P001</td><td>Ahmed Ben Ali</td><td>Subscription</td><td>59 DT</td><td>2026-01-01</td><td><span class="badge badge-paid">Paid</span></td></tr>
+                            <tr><td>#P002</td><td>Fatma Trabelsi</td><td>Rental</td><td>475 DT</td><td>2026-01-12</td><td><span class="badge badge-paid">Paid</span></td></tr>
+                            <tr><td>#P003</td><td>Mohamed Sahli</td><td>Subscription</td><td>99 DT</td><td>2026-01-05</td><td><span class="badge badge-refunded">Refunded</span></td></tr>
+                            <tr><td>#P004</td><td>Amira Bouazizi</td><td>Rental</td><td>350 DT</td><td>2026-01-18</td><td><span class="badge badge-failed">Failed</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- RESTAURANTS SECTION -->
+            <section id="section-restaurants" class="hidden">
+                <div class="section-title"><span>Restaurants</span></div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Name</th><th>Category</th><th>Rating</th><th>Price</th><th>Phone</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>#1</td><td>Le Pirate Restaurant</td><td>Restaurant</td><td>4.6</td><td></td><td>+216 72 280 123</td><td>Cuisine tunisienne et mediterraneenne, vue mer</td></tr>
+                            <tr><td>#2</td><td>Cafe des Nattes</td><td>Cafe</td><td>4.3</td><td>$</td><td>+216 72 280 456</td><td>Cafe traditionnel, atmosphere authentique</td></tr>
+                            <tr><td>#3</td><td>Restaurant La Plage</td><td>Restaurant</td><td>4.7</td><td>$</td><td>+216 72 280 789</td><td>Fruits de mer frais, plage privee</td></tr>
+                            <tr><td>#4</td><td>Chez Ali</td><td>Restaurant</td><td>4.4</td><td></td><td>+216 72 280 321</td><td>Cuisine traditionnelle, couscous et grillades</td></tr>
+                            <tr><td>#5</td><td>Sunset Cafe</td><td>Cafe</td><td>4.5</td><td>$</td><td>+216 72 280 654</td><td>Cafe face a la mer, couchers de soleil</td></tr>
+                            <tr><td>#6</td><td>Pizzeria Napoli</td><td>Restaurant</td><td>4.2</td><td></td><td>+216 72 280 987</td><td>Pizza authentique au four a bois</td></tr>
+                            <tr><td>#7</td><td>Le Cap Nabeul</td><td>Restaurant</td><td>4.8</td><td>$</td><td>+216 72 280 147</td><td>Restaurant gastronomique, vue panoramique</td></tr>
+                            <tr><td>#8</td><td>Marche de Nabeul</td><td>Point d'interet</td><td>4.6</td><td></td><td></td><td>Grand marche, artisat et epices</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        function showSection(name) {
+            var sections = ['stats', 'motorcycles', 'users', 'reservations', 'payments', 'restaurants'];
+            sections.forEach(function(s) {
+                var el = document.getElementById(s === 'stats' ? 'dash-stats' : 'section-' + s);
+                if (el) el.classList.add('hidden');
+            });
+            var target = document.getElementById(name === 'stats' ? 'dash-stats' : 'section-' + name);
+            if (target) target.classList.remove('hidden');
+
+            var links = document.querySelectorAll('.sidebar-nav a');
+            links.forEach(function(link) { link.classList.remove('active'); });
+            event.currentTarget.classList.add('active');
+        }
+
+        function showAddMotoModal() {
+            alert('Add Motorcycle modal would open here.');
+        }
+
+        function editMoto(id) {
+            alert('Edit motorcycle #' + id + ' modal would open here.');
+        }
+    </script>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
