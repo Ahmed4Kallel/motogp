@@ -249,9 +249,94 @@ function closeBookingModal(){var m=document.getElementById('booking-modal');if(m
 // ===== PRICING =====
 function initPricing(){var c=$('#pricing-grid');if(!c)return;c.innerHTML=PLANS.map(function(p){return '<div class="pricing-card '+(p.popular?'popular':'')+'">'+(p.popular?'<div class="popular-badge">Populaire</div>':'')+'<div class="pricing-header"><h3>'+p.name+'</h3><div class="pricing-price"><span class="currency">DT</span><span class="amount">'+p.price+'</span><span class="period">/mois</span></div></div><ul class="pricing-features">'+p.features.map(function(f){return '<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'+f+'</li>'}).join('')+'</ul><a href="register.html?plan='+p.name.toLowerCase()+'" class="btn '+(p.popular?'btn-primary':'btn-outline')+'" style="width:100%;justify-content:center;">'+(p.popular?'Commencer':'Choisir')+'</a></div>'}).join('')}
 
+// ===== AUTH =====
+var ADMIN_EMAIL='admin@motogp.tn',ADMIN_PASS='admin123';
+function getCurrentUser(){try{return JSON.parse(localStorage.getItem('motogp_user'))}catch(e){return null}}
+function loginUser(email,pass){
+  if(email===ADMIN_EMAIL&&pass===ADMIN_PASS){
+    var u={name:'Admin',email:email,role:'admin',avatar:'AD'};
+    localStorage.setItem('motogp_user',JSON.stringify(u));return{ok:true,role:'admin'}
+  }
+  var users=JSON.parse(localStorage.getItem('motogp_users')||'[]');
+  var u=users.find(function(x){return x.email===email&&x.password===pass});
+  if(u){localStorage.setItem('motogp_user',JSON.stringify({name:u.firstName+' '+u.lastName,email:u.email,role:'user',avatar:u.firstName[0]+u.lastName[0]}));return{ok:true,role:'user'}}
+  return{ok:false}
+}
+function registerUser(data){
+  var users=JSON.parse(localStorage.getItem('motogp_users')||'[]');
+  if(users.find(function(x){return x.email===data.email}))return{ok:false,msg:'Email deja utilise'};
+  users.push(data);localStorage.setItem('motogp_users',JSON.stringify(users));return{ok:true}
+}
+function logoutUser(){localStorage.removeItem('motogp_user');window.location.href='index.html'}
+function updateNavAuth(){
+  var user=getCurrentUser(),navLinks=$('.nav-links'),mobileLinks=$('.mobile-menu');
+  if(!navLinks)return;
+  var authBtns=navLinks.querySelector('.btn-outline');if(!authBtns)return;
+  var parent=authBtns.parentElement;
+  if(user){
+    var dashLink=user.role==='admin'?'dashboard.html':'profile.html';
+    parent.innerHTML='<a href="'+dashLink+'" class="btn btn-outline btn-sm" style="display:flex;align-items:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'+user.name+'</a><a href="#" class="btn btn-primary btn-sm" onclick="logoutUser();return false;">Deconnexion</a>';
+  }
+}
+function initLoginForm(){
+  var form=$('#login-form');if(!form)return;
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=form.querySelector('[name="email"]').value.trim();
+    var pass=form.querySelector('[name="password"]').value;
+    var result=loginUser(email,pass);
+    if(result.ok){
+      if(result.role==='admin')window.location.href='dashboard.html';
+      else window.location.href='profile.html';
+    }else{
+      var err=form.querySelector('.login-error');
+      if(!err){err=document.createElement('p');err.className='login-error';err.style.cssText='color:#EF4444;font-size:.85rem;margin-bottom:12px;text-align:center;';form.insertBefore(err,form.firstChild)}
+      err.textContent='Email ou mot de passe incorrect';
+    }
+  });
+}
+function initRegisterForm(){
+  var form=$('#register-form');if(!form)return;
+  var planSelect=form.querySelector('[name="plan"]');
+  var planNameEl=document.getElementById('plan-name');
+  var planPriceEl=document.getElementById('plan-price');
+  var prices={essentiel:'29 DT/mois',premium:'59 DT/mois',vip:'99 DT/mois'};
+  var names={essentiel:'Essentiel',premium:'Premium',vip:'VIP'};
+  var params=new URLSearchParams(window.location.search);
+  var pp=params.get('plan');
+  if(pp&&planSelect){planSelect.value=pp;if(planNameEl)planNameEl.textContent=names[pp]||'Premium';if(planPriceEl)planPriceEl.textContent=prices[pp]||'59 DT/mois'}
+  if(planSelect)planSelect.addEventListener('change',function(){if(planNameEl)planNameEl.textContent=names[planSelect.value]||'Premium';if(planPriceEl)planPriceEl.textContent=prices[planSelect.value]||'59 DT/mois'});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var data={firstName:form.querySelector('[name="firstName"]').value,lastName:form.querySelector('[name="lastName"]').value,email:form.querySelector('[name="email"]').value,phone:form.querySelector('[name="phone"]').value,password:form.querySelector('[name="password"]').value,plan:form.querySelector('[name="plan"]').value};
+    var result=registerUser(data);
+    if(result.ok){
+      document.getElementById('step-1').style.display='none';
+      document.getElementById('step-2').style.display='block';
+      document.getElementById('step-indicator-1').classList.remove('active');
+      document.getElementById('step-indicator-1').classList.add('done');
+      document.getElementById('step-line-1').classList.add('done');
+      document.getElementById('step-indicator-2').classList.add('active');
+      if(typeof gsap!=='undefined')gsap.from('#step-2',{y:20,opacity:0,duration:.6,ease:'power2.out'});
+    }
+  });
+  var payForm=$('#payment-form');
+  if(payForm)payForm.addEventListener('submit',function(e){
+    e.preventDefault();
+    document.getElementById('step-2').style.display='none';
+    document.getElementById('step-indicator-2').classList.remove('active');
+    document.getElementById('step-indicator-2').classList.add('done');
+    document.getElementById('login-link').style.display='none';
+    document.getElementById('success-screen').classList.add('active');
+    document.querySelector('.steps').style.display='none';
+    if(typeof gsap!=='undefined'){gsap.from('.success-icon',{scale:0,duration:.5,ease:'back.out(1.7)'});gsap.from('.success-screen h2',{y:15,opacity:0,duration:.4,delay:.2});gsap.from('.success-screen p',{y:15,opacity:0,duration:.4,delay:.35})}
+  });
+}
+
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',function(){
   initLoader();initNavbar();initCursor();
   initMap();initScrollAnimations();initMotos3d();initMotosCatalogue();initPricing();
+  initLoginForm();initRegisterForm();updateNavAuth();
   setTimeout(function(){$$('.reveal').forEach(function(el){if(getComputedStyle(el).opacity==='0')el.classList.add('no-gsap')})},2000);
 });

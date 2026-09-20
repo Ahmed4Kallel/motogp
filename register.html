@@ -150,55 +150,6 @@
       gsap.from('#step-1 .form-group', {y:15, opacity:0, duration:.5, stagger:.07, delay:.5, ease:'power2.out'});
       gsap.from('#step-1 .btn', {y:10, opacity:0, duration:.5, delay:.9, ease:'power2.out'});
       gsap.from('.auth-link', {opacity:0, duration:.5, delay:1.1});
-
-      var prices = {essentiel:'29 DT/mois', premium:'59 DT/mois', vip:'99 DT/mois'};
-      var names = {essentiel:'Essentiel', premium:'Premium', vip:'VIP'};
-      var planSelect = document.querySelector('[name="plan"]');
-      var planName = document.getElementById('plan-name');
-      var planPrice = document.getElementById('plan-price');
-
-      var params = new URLSearchParams(window.location.search);
-      var planParam = params.get('plan');
-      if(planParam && planSelect){
-        planSelect.value = planParam;
-        planName.textContent = names[planParam] || 'Premium';
-        planPrice.textContent = prices[planParam] || '59 DT/mois';
-      }
-
-      if(planSelect) planSelect.addEventListener('change', function(){
-        planName.textContent = names[planSelect.value] || 'Premium';
-        planPrice.textContent = prices[planSelect.value] || '59 DT/mois';
-      });
-
-      document.getElementById('register-form').addEventListener('submit', function(e){
-        e.preventDefault();
-        document.getElementById('step-1').style.display = 'none';
-        document.getElementById('step-2').style.display = 'block';
-        document.getElementById('step-indicator-1').classList.remove('active');
-        document.getElementById('step-indicator-1').classList.add('done');
-        document.getElementById('step-line-1').classList.add('done');
-        document.getElementById('step-indicator-2').classList.add('active');
-
-        gsap.from('#step-2', {y:20, opacity:0, duration:.6, ease:'power2.out'});
-        gsap.from('#step-2 .form-group', {y:12, opacity:0, duration:.4, stagger:.06, delay:.15, ease:'power2.out'});
-        gsap.from('.booking-summary', {y:10, opacity:0, duration:.4, delay:.5});
-        gsap.from('.terms-check', {opacity:0, duration:.3, delay:.6});
-      });
-
-      document.getElementById('payment-form').addEventListener('submit', function(e){
-        e.preventDefault();
-        document.getElementById('step-2').style.display = 'none';
-        document.getElementById('step-indicator-2').classList.remove('active');
-        document.getElementById('step-indicator-2').classList.add('done');
-        document.getElementById('login-link').style.display = 'none';
-        document.getElementById('success-screen').classList.add('active');
-        document.querySelector('.steps').style.display = 'none';
-
-        gsap.from('.success-icon', {scale:0, duration:.5, ease:'back.out(1.7)'});
-        gsap.from('.success-screen h2', {y:15, opacity:0, duration:.4, delay:.2});
-        gsap.from('.success-screen p', {y:15, opacity:0, duration:.4, delay:.35});
-        gsap.from('.success-screen .btn', {y:10, opacity:0, duration:.4, delay:.5});
-      });
     });
   </script>
   <script src="js/data.js"></script>
