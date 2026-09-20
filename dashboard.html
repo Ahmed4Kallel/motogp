@@ -140,6 +140,55 @@
     .activity-text strong{color:var(--text)}
     .activity-time{font-size:.7rem;color:var(--muted);margin-top:2px}
 
+    /* LINE CHART */
+    .line-chart-wrap{position:relative;height:180px;padding:10px 0}
+    .line-svg{width:100%;height:100%}
+    .line-dot{transition:all .2s}
+    .line-dot:hover{r:6;filter:drop-shadow(0 0 6px var(--primary))}
+    .line-grid line{stroke:var(--border);stroke-width:1}
+    .line-axis text{fill:var(--muted);font-size:10px;font-family:'Inter',sans-serif}
+    .line-area{fill:url(#areaGrad);opacity:.3}
+    .line-path{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+    /* HORIZONTAL BAR */
+    .hbar-list{display:flex;flex-direction:column;gap:14px}
+    .hbar-item{display:flex;align-items:center;gap:12px}
+    .hbar-label{width:140px;font-size:.8rem;text-align:right;flex-shrink:0;color:var(--muted)}
+    .hbar-track{flex:1;height:24px;background:rgba(255,255,255,.03);border-radius:6px;overflow:hidden;position:relative}
+    .hbar-fill{height:100%;border-radius:6px;transition:width 1s cubic-bezier(.4,0,.2,1);position:relative}
+    .hbar-fill span{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:.7rem;font-weight:700;color:#fff}
+
+    /* SPARKLINE */
+    .spark-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+    .spark-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+    .spark-card .spark-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+    .spark-card .spark-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+    .spark-card .spark-val{font-size:1.3rem;font-weight:800;margin-top:4px}
+    .spark-card .spark-change{font-size:.72rem;padding:3px 8px;border-radius:6px}
+    .spark-svg{width:100%;height:50px}
+    .spark-path{fill:none;stroke-width:2;stroke-linecap:round}
+
+    /* STACKED BAR */
+    .stacked-chart{display:flex;align-items:flex-end;gap:8px;height:150px;padding-top:10px}
+    .stacked-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+    .stacked-bars{width:100%;display:flex;flex-direction:column;border-radius:4px 4px 0 0;overflow:hidden}
+    .stacked-seg{width:100%;transition:height .8s cubic-bezier(.4,0,.2,1)}
+    .stacked-label{font-size:.68rem;color:var(--muted)}
+    .stacked-legend{display:flex;gap:16px;margin-top:14px;justify-content:center}
+    .stacked-legend span{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--muted)}
+    .stacked-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+    /* DONUT RING */
+    .ring-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px}
+    .ring-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;text-align:center}
+    .ring-card h4{font-size:.82rem;font-weight:600;margin-bottom:14px}
+    .ring-svg{width:120px;height:120px;margin:0 auto}
+    .ring-bg{fill:none;stroke:rgba(255,255,255,.05);stroke-width:10}
+    .ring-val{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)}
+    .ring-center-text{font-size:1.1rem;font-weight:800;fill:var(--text);font-family:'Inter',sans-serif}
+    .ring-center-sub{font-size:.6rem;fill:var(--muted);font-family:'Inter',sans-serif}
+    .ring-card .ring-legend{margin-top:12px;font-size:.72rem;color:var(--muted)}
+
     /* SECTION TRANSITIONS */
     .dash-section{display:none;opacity:0}
     .dash-section.active{display:block}
@@ -172,10 +221,14 @@
       .main{margin-left:0;padding:20px 16px;padding-top:60px}
       .stats-grid{grid-template-columns:repeat(2,1fr)}
       .charts-row{grid-template-columns:1fr}
+      .spark-row{grid-template-columns:1fr}
+      .ring-row{grid-template-columns:repeat(3,1fr)}
     }
     @media(max-width:500px){
       .stats-grid{grid-template-columns:1fr}
       .header{flex-direction:column;gap:12px;align-items:flex-start}
+      .ring-row{grid-template-columns:1fr}
+      .hbar-label{width:100px;font-size:.7rem}
     }
   </style>
 </head>
@@ -283,6 +336,62 @@
           <div class="activity-item"><div class="activity-dot" style="background:var(--green)"></div><div><div class="activity-text"><strong>SYM Maxsym 400</strong> - 28 reservations</div><div class="activity-time">Taux d'occupation: 68%</div></div></div>
           <div class="activity-item"><div class="activity-dot" style="background:var(--purple)"></div><div><div class="activity-text"><strong>Kymco Like 125</strong> - 22 reservations</div><div class="activity-time">Taux d'occupation: 55%</div></div></div>
         </div>
+      </div>
+    </div>
+
+    <!-- SPARKLINE CARDS -->
+    <div class="spark-row">
+      <div class="spark-card">
+        <div class="spark-top">
+          <div><div class="spark-label">Revenu / jour</div><div class="spark-val" style="color:var(--green)">1,507 DT</div></div>
+          <span class="spark-change stat-change up">+12%</span>
+        </div>
+        <svg class="spark-svg" id="spark-revenue" viewBox="0 0 200 50" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="spark-card">
+        <div class="spark-top">
+          <div><div class="spark-label">Reservations / semaine</div><div class="spark-val" style="color:var(--blue)">23</div></div>
+          <span class="spark-change stat-change up">+8%</span>
+        </div>
+        <svg class="spark-svg" id="spark-bookings" viewBox="0 0 200 50" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="spark-card">
+        <div class="spark-top">
+          <div><div class="spark-label">Nouveaux users / mois</div><div class="spark-val" style="color:var(--purple)">34</div></div>
+          <span class="spark-change stat-change up">+22%</span>
+        </div>
+        <svg class="spark-svg" id="spark-users" viewBox="0 0 200 50" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+
+    <!-- REVENUE LINE CHART + HORIZONTAL BARS -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3>Revenu journalier <span>14 derniers jours</span></h3>
+        <div class="line-chart-wrap">
+          <svg class="line-svg" id="line-revenue" viewBox="0 0 500 180" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Locations par modele <span>Top 6</span></h3>
+        <div class="hbar-list" id="hbar-bookings"></div>
+      </div>
+    </div>
+
+    <!-- STACKED BAR + RING CHARTS -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3>Reservations par statut <span>6 derniers mois</span></h3>
+        <div class="stacked-chart" id="stacked-chart"></div>
+        <div class="stacked-legend">
+          <span><i style="background:var(--green)"></i> Confirme</span>
+          <span><i style="background:var(--yellow)"></i> En attente</span>
+          <span><i style="background:var(--red)"></i> Annule</span>
+        </div>
+      </div>
+      <div class="chart-card" style="display:flex;flex-direction:column">
+        <h3>Taux de performance</h3>
+        <div class="ring-row" id="ring-charts"></div>
       </div>
     </div>
   </div>
@@ -478,6 +587,94 @@ function renderDonut(){
   donut.style.background=grad;
 }
 
+function renderSparkline(svgId,data,color){
+  var svg=document.getElementById(svgId);if(!svg)return;
+  var w=200,h=50,max=Math.max.apply(null,data),min=Math.min.apply(null,data);
+  var range=max-min||1;
+  var pts=data.map(function(v,i){var x=(i/(data.length-1))*w;var y=h-(((v-min)/range)*(h-10))-5;return x+','+y});
+  svg.innerHTML='<defs><linearGradient id="sg-'+svgId+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+color+'" stop-opacity=".3"/><stop offset="100%" stop-color="'+color+'" stop-opacity="0"/></linearGradient></defs><polygon class="line-area" points="0,'+h+' '+pts.join(' ')+' '+w+','+h+'" fill="url(#sg-'+svgId+')"/><polyline class="spark-path" points="'+pts.join(' ')+'" stroke="'+color+'"/>';
+}
+
+function renderLineRevenue(){
+  var svg=document.getElementById('line-revenue');if(!svg)return;
+  var data=[1200,1850,980,2100,1650,2400,1900,2800,1400,2200,1750,3100,2500,2900];
+  var labels=['6','7','8','9','10','11','12','13','14','15','16','17','18','19'];
+  var w=500,h=180,px=40,py=20,gw=w-px*2,gh=h-py*2;
+  var max=Math.max.apply(null,data),min=Math.min(data)*0.8,range=max-min;
+  var gridLines=5;
+  var html='<defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8511A" stop-opacity=".4"/><stop offset="100%" stop-color="#E8511A" stop-opacity="0"/></linearGradient></defs>';
+  for(var g=0;g<=gridLines;g++){
+    var gy=py+(g/gridLines)*gh;
+    var gv=Math.round(max-(g/gridLines)*range);
+    html+='<line x1="'+px+'" y1="'+gy+'" x2="'+(w-px)+'" y2="'+gy+'" class="line-grid" stroke-dasharray="3,3"/>';
+    html+='<text x="'+(px-8)+'" y="'+(gy+4)+'" text-anchor="end" class="line-axis">'+(gv/1000).toFixed(1)+'k</text>';
+  }
+  var points=data.map(function(v,i){var x=px+(i/(data.length-1))*gw;var y=py+((1-(v-min)/range)*gh);return{x:x,y:y}});
+  var pathD='M'+points.map(function(p){return p.x+','+p.y}).join(' L');
+  var areaD=pathD+' L'+(w-px)+','+(h-py)+' L'+px+','+(h-py)+' Z';
+  html+='<path d="'+areaD+'" class="line-area"/>';
+  html+='<path d="'+pathD+'" class="line-path"/>';
+  points.forEach(function(p,i){
+    html+='<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="#E8511A" class="line-dot"/>';
+    html+='<text x="'+p.x+'" y="'+(h-4)+'" text-anchor="middle" class="line-axis">'+labels[i]+'</text>';
+  });
+  svg.innerHTML=html;
+}
+
+function renderHorizontalBars(){
+  var c=document.getElementById('hbar-bookings');if(!c)return;
+  var data=[
+    {name:'Honda Vision 110',v:42,c:'#E8511A'},
+    {name:'Yamaha NMAX 125',v:38,c:'#C9A96E'},
+    {name:'Piaggio Zip 100',v:31,c:'#3B82F6'},
+    {name:'SYM Maxsym 400',v:28,c:'#10B981'},
+    {name:'Kymco Like 125',v:22,c:'#8B5CF6'},
+    {name:'Suzuki Burgman',v:18,c:'#F59E0B'}
+  ];
+  var max=Math.max.apply(null,data.map(function(d){return d.v}));
+  c.innerHTML=data.map(function(d){
+    var pct=(d.v/max)*100;
+    return '<div class="hbar-item"><div class="hbar-label">'+d.name+'</div><div class="hbar-track"><div class="hbar-fill" style="width:0;background:'+d.c+'" data-w="'+pct+'"><span>'+d.v+'</span></div></div></div>';
+  }).join('');
+  setTimeout(function(){c.querySelectorAll('.hbar-fill').forEach(function(b){b.style.width=b.dataset.w+'%'})},200);
+}
+
+function renderStackedChart(){
+  var c=document.getElementById('stacked-chart');if(!c)return;
+  var months=['Avr','Mai','Jun','Jul','Aou','Sep'];
+  var data=[
+    {c:28,g:5,r:2},{c:32,g:4,r:1},{c:35,g:6,r:3},{c:42,g:7,r:2},{c:38,g:5,r:4},{c:45,g:8,r:3}
+  ];
+  var max=data.reduce(function(a,d){return Math.max(a,d.c+d.g+d.r)},0);
+  c.innerHTML=months.map(function(m,i){
+    var d=data[i];var total=d.c+d.g+d.r;
+    var hc=(d.c/total)*100,hg=(d.g/total)*100,hr=(d.r/total)*100;
+    var h=(total/max)*100;
+    return '<div class="stacked-col"><div class="stacked-bars" style="height:0" data-h="'+h+'"><div class="stacked-seg" style="background:var(--green);height:0" data-h="'+hc+'"></div><div class="stacked-seg" style="background:var(--yellow);height:0" data-h="'+hg+'"></div><div class="stacked-seg" style="background:var(--red);height:0" data-h="'+hr+'"></div></div><div class="stacked-label">'+m+'</div></div>';
+  }).join('');
+  setTimeout(function(){
+    c.querySelectorAll('.stacked-bars').forEach(function(b){b.style.height=b.dataset.h+'%'});
+    c.querySelectorAll('.stacked-seg').forEach(function(s){s.style.height=s.dataset.h+'%'});
+  },300);
+}
+
+function renderRingCharts(){
+  var c=document.getElementById('ring-charts');if(!c)return;
+  var rings=[
+    {label:'Taux occupation',val:82,color:'#10B981'},
+    {label:'Satisfaction',val:94,color:'#E8511A'},
+    {label:'Ponctualite',val:91,color:'#3B82F6'}
+  ];
+  var circumference=2*Math.PI*45;
+  c.innerHTML=rings.map(function(r){
+    var offset=circumference-(r.val/100)*circumference;
+    return '<div class="ring-card"><h4>'+r.label+'</h4><svg class="ring-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" class="ring-bg"/><circle cx="50" cy="50" r="45" class="ring-val" stroke="'+r.color+'" stroke-dasharray="'+circumference+'" stroke-dashoffset="'+circumference+'" data-offset="'+offset+'" transform="rotate(-90 50 50)"/><text x="50" y="48" text-anchor="middle" class="ring-center-text">'+r.val+'%</text><text x="50" y="62" text-anchor="middle" class="ring-center-sub">'+r.label+'</text></svg></div>';
+  }).join('');
+  setTimeout(function(){
+    c.querySelectorAll('.ring-val').forEach(function(el){el.style.strokeDashoffset=el.dataset.offset});
+  },400);
+}
+
 function renderMotosTable(){
   var tbody=document.getElementById('motos-tbody');if(!tbody)return;
   tbody.innerHTML=DB.motos.map(function(m){
@@ -541,6 +738,10 @@ function deleteMoto(id){if(confirm('Supprimer ce scooter?')){DB.motos=DB.motos.f
 document.getElementById('dash-date').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
 renderBarChart();renderDonut();renderMotosTable();renderUsersTable();renderReservationsTable();
+renderSparkline('spark-revenue',[800,1200,980,1850,1400,2100,1650,2400,1900,2800,2200,2500,2900,3100],'#10B981');
+renderSparkline('spark-bookings',[12,15,18,14,22,19,25,21,28,24,30,26,32,23],'#3B82F6');
+renderSparkline('spark-users',[5,8,6,12,10,15,18,14,20,22,25,28,30,34],'#8B5CF6');
+renderLineRevenue();renderHorizontalBars();renderStackedChart();renderRingCharts();
 setTimeout(animateCounters,200);
 setTimeout(function(){animateSection(document.getElementById('sec-stats'))},100);
 </script>
