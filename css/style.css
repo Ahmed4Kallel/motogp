@@ -259,21 +259,96 @@ input,select,textarea{font-family:inherit;outline:none}
 
 /* AUTH PAGES */
 .auth-page{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
-.auth-left{background:var(--gradient);display:flex;align-items:center;justify-content:center;padding:40px}
-.auth-left-content{color:white;text-align:center}
-.auth-left-content h2{font-size:2rem;font-weight:900;margin-bottom:12px}
-.auth-left-content p{font-size:1rem;opacity:.85}
-.auth-right{display:flex;align-items:center;justify-content:center;padding:40px}
+.auth-visual{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg)}
+.auth-visual-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.auth-visual-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,10,15,.88) 0%,rgba(232,81,26,.15) 50%,rgba(10,10,15,.92) 100%);z-index:2}
+.auth-visual-content{position:relative;z-index:3;text-align:center;padding:40px;animation:authFadeIn 1s ease-out}
+.auth-visual-content h2{font-size:2.2rem;font-weight:900;margin-bottom:10px}
+.auth-visual-content h2 span{background:linear-gradient(135deg,var(--primary),#FF6B35);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.auth-visual-content p{color:var(--text-muted);font-size:1rem;max-width:340px;margin:0 auto;line-height:1.7}
+.auth-visual-content .visual-price{margin-top:28px;display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;padding:12px 20px;backdrop-filter:blur(10px)}
+.auth-visual-content .visual-price strong{color:var(--primary);font-size:1.3rem}
+.auth-visual-content .visual-price span{color:var(--text-muted);font-size:.82rem}
+.auth-visual-badge{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:rgba(15,15,26,.8);border:1px solid var(--border);border-radius:12px;padding:12px 20px;backdrop-filter:blur(10px);z-index:3;animation:authSlideUp 1s ease-out .4s both}
+.auth-visual-badge .badge-icon{width:36px;height:36px;border-radius:50%;background:rgba(232,81,26,.15);display:flex;align-items:center;justify-content:center;font-size:1rem}
+.auth-visual-badge .badge-text{font-size:.82rem;color:var(--text-muted)}
+.auth-visual-badge .badge-text strong{color:var(--primary)}
+
+.auth-card-wrapper{display:flex;align-items:center;justify-content:center;padding:40px;overflow-y:auto;max-height:100vh}
+.auth-card{width:100%;max-width:440px;animation:authCardIn .7s ease-out}
+.auth-card h2{font-size:1.7rem;font-weight:800;margin-bottom:6px;text-align:center}
+.auth-subtitle{text-align:center;color:var(--text-muted);margin-bottom:28px;font-size:.9rem}
+
+/* Steps indicator */
+.steps{display:flex;justify-content:center;gap:0;margin-bottom:28px}
+.step{display:flex;align-items:center;gap:8px}
+.step .step-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;background:var(--border);color:var(--text-muted);transition:all .3s}
+.step.active .step-num{background:var(--gradient);color:#fff}
+.step.done .step-num{background:#10B981;color:#fff}
+.step-label{font-size:.78rem;color:var(--text-muted)}
+.step.active .step-label{color:var(--text);font-weight:600}
+.step-line{width:50px;height:2px;background:var(--border);margin:0 10px;transition:background .3s}
+.step-line.done{background:#10B981}
+
+/* Form groups */
 .auth-form{width:100%;max-width:400px}
 .auth-form h2{font-size:1.8rem;font-weight:800;margin-bottom:8px}
-.auth-form p{color:var(--text-muted);margin-bottom:32px;font-size:.92rem}
-.form-group{margin-bottom:20px}
-.form-group label{display:block;font-size:.82rem;font-weight:500;color:var(--text-muted);margin-bottom:8px}
-.form-group input,.form-group select{width:100%;padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text);font-size:.92rem;transition:border-color .3s}
-.form-group input:focus,.form-group select:focus{border-color:var(--primary)}
-.auth-link{margin-top:20px;text-align:center;font-size:.88rem;color:var(--text-muted)}
-.auth-link a{color:var(--primary);font-weight:600}
-@media(max-width:768px){.auth-page{grid-template-columns:1fr}.auth-left{display:none}}
+.auth-form .auth-subtitle{color:var(--text-muted);margin-bottom:28px;font-size:.92rem}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:.8rem;font-weight:600;color:var(--text-muted);margin-bottom:6px}
+.form-group input,.form-group select{width:100%;padding:13px 16px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-size:.92rem;transition:all .3s;font-family:inherit;outline:none}
+.form-group input:focus,.form-group select:focus{border-color:var(--primary);background:rgba(232,81,26,.03);box-shadow:0 0 0 3px rgba(232,81,26,.08)}
+.form-group input::placeholder{color:rgba(255,255,255,.25)}
+.form-group select option{background:var(--card)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* Remember / Forgot row */
+.auth-options{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.auth-options label{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--text-muted);cursor:pointer}
+.auth-options label input[type="checkbox"]{accent-color:var(--primary);width:15px;height:15px}
+.auth-options a{font-size:.82rem;color:var(--primary);text-decoration:none;font-weight:500}
+.auth-options a:hover{text-decoration:underline}
+
+/* Divider */
+.form-divider{display:flex;align-items:center;gap:16px;margin:22px 0}
+.form-divider::before,.form-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.form-divider span{font-size:.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+
+/* Social buttons */
+.social-login{display:flex;gap:10px;margin-bottom:4px}
+.social-login .btn{flex:1;padding:11px 16px;font-size:.85rem}
+
+/* Terms check */
+.terms-check{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.terms-check input{accent-color:var(--primary);width:17px;height:17px}
+.terms-check label{font-size:.8rem;color:var(--text-muted);cursor:pointer}
+
+/* Booking/plan summary */
+.booking-summary{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:16px;margin:18px 0}
+.booking-summary .row{display:flex;justify-content:space-between;padding:6px 0;font-size:.85rem;color:var(--text-muted)}
+.booking-summary .row.total{border-top:1px solid var(--border);padding-top:10px;margin-top:6px;font-weight:700;font-size:1rem;color:var(--text)}
+.booking-summary .row.total span:last-child{color:var(--primary)}
+
+/* Auth link */
+.auth-link{margin-top:20px;text-align:center;font-size:.85rem;color:var(--text-muted)}
+.auth-link a{color:var(--primary);font-weight:600;text-decoration:none}
+.auth-link a:hover{text-decoration:underline}
+
+/* Success screen */
+.success-screen{display:none;text-align:center;padding:40px 20px}
+.success-screen.active{display:block}
+.success-icon{width:76px;height:76px;border-radius:50%;background:rgba(16,185,129,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:2rem;animation:popIn .5s cubic-bezier(.175,.885,.32,1.275)}
+.success-screen h2{font-size:1.5rem;font-weight:800;margin-bottom:8px}
+.success-screen p{color:var(--text-muted);font-size:.92rem;margin-bottom:26px}
+
+/* Animations */
+@keyframes authFadeIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes authSlideUp{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes popIn{0%{transform:scale(0)}100%{transform:scale(1)}}
+@keyframes authCardIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+@media(max-width:1024px){.auth-page{grid-template-columns:1fr}.auth-visual{display:none}}
+@media(max-width:480px){.auth-card-wrapper{padding:24px 16px}.form-row{grid-template-columns:1fr}}
 
 /* PROFILE / DASHBOARD */
 .dashboard-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}

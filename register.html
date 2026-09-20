@@ -3,443 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inscription Premium - MotoGp Nabeul</title>
+  <title>Inscription - MotoGp Nabeul</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css"/>
-  <link rel="stylesheet" href="css/extra.css"/>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: #0F0F1A; color: #fff; }
-
-    .auth-page {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .auth-visual {
-      position: relative;
-      background: linear-gradient(135deg, #1A1A2E 0%, #0F0F1A 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .auth-visual::before {
-      content: '';
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(255,77,0,0.15) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: pulse-glow 4s ease-in-out infinite;
-    }
-
-    @keyframes pulse-glow {
-      0%, 100% { transform: scale(1); opacity: 0.6; }
-      50% { transform: scale(1.1); opacity: 1; }
-    }
-
-    .auth-visual-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 40px;
-    }
-
-    .auth-visual-content img {
-      max-width: 420px;
-      width: 100%;
-      margin-bottom: 32px;
-      filter: drop-shadow(0 20px 60px rgba(255,77,0,0.3));
-    }
-
-    .auth-visual-content h2 {
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-
-    .auth-visual-content h2 span {
-      background: linear-gradient(135deg, #FF4D00, #FF6B35);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .auth-visual-content p {
-      color: #9CA3AF;
-      font-size: 1.05rem;
-      max-width: 360px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    .auth-visual .premium-badge {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(30,30,50,0.8);
-      border: 1px solid #2D2D44;
-      border-radius: 12px;
-      padding: 14px 24px;
-      backdrop-filter: blur(10px);
-      z-index: 3;
-    }
-
-    .premium-badge .icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255,77,0,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-    }
-
-    .premium-badge .text { font-size: 0.85rem; }
-    .premium-badge .text strong { color: #FF4D00; }
-
-    .auth-form-side {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-      overflow-y: auto;
-      max-height: 100vh;
-    }
-
-    .auth-card {
-      width: 100%;
-      max-width: 480px;
-      background: #1E1E32;
-      border: 1px solid #2D2D44;
-      border-radius: 16px;
-      padding: 44px 36px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-
-    .auth-card .logo {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-
-    .auth-card .logo a {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.6rem;
-      font-weight: 800;
-      text-decoration: none;
-      color: #fff;
-    }
-
-    .auth-card .logo a span {
-      background: linear-gradient(135deg, #FF4D00, #FF6B35);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .auth-card h2 {
-      font-size: 1.6rem;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 6px;
-    }
-
-    .auth-card .subtitle {
-      text-align: center;
-      color: #9CA3AF;
-      margin-bottom: 28px;
-      font-size: 0.92rem;
-    }
-
-    .steps {
-      display: flex;
-      justify-content: center;
-      gap: 0;
-      margin-bottom: 32px;
-    }
-
-    .step {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .step .step-num {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-      font-weight: 700;
-      background: #2D2D44;
-      color: #9CA3AF;
-      transition: all 0.3s ease;
-    }
-
-    .step.active .step-num {
-      background: linear-gradient(135deg, #FF4D00, #FF6B35);
-      color: #fff;
-    }
-
-    .step.done .step-num {
-      background: #10B981;
-      color: #fff;
-    }
-
-    .step-label {
-      font-size: 0.8rem;
-      color: #9CA3AF;
-    }
-
-    .step.active .step-label {
-      color: #fff;
-      font-weight: 600;
-    }
-
-    .step-line {
-      width: 60px;
-      height: 2px;
-      background: #2D2D44;
-      margin: 0 12px;
-      transition: background 0.3s ease;
-    }
-
-    .step-line.done {
-      background: #10B981;
-    }
-
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #9CA3AF;
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 13px 16px;
-      border-radius: 10px;
-      border: 1px solid #2D2D44;
-      background: #1A1A2E;
-      color: #fff;
-      font-size: 0.92rem;
-      outline: none;
-      transition: all 0.3s ease;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-      border-color: #FF4D00;
-    }
-
-    .form-group select option {
-      background: #1A1A2E;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      border: none;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-      width: 100%;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #FF4D00, #FF6B35);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(255,77,0,0.4);
-    }
-
-    .booking-summary {
-      background: #1A1A2E;
-      border-radius: 10px;
-      padding: 18px;
-      margin: 18px 0;
-    }
-
-    .booking-summary .row {
-      display: flex;
-      justify-content: space-between;
-      padding: 7px 0;
-      font-size: 0.88rem;
-      color: #9CA3AF;
-    }
-
-    .booking-summary .row.total {
-      border-top: 1px solid #2D2D44;
-      padding-top: 12px;
-      margin-top: 8px;
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: #fff;
-    }
-
-    .booking-summary .row.total span:last-child {
-      color: #FF4D00;
-    }
-
-    .terms-check {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .terms-check input {
-      accent-color: #FF4D00;
-      width: 18px;
-      height: 18px;
-    }
-
-    .terms-check label {
-      font-size: 0.82rem;
-      color: #9CA3AF;
-      cursor: pointer;
-    }
-
-    .auth-link {
-      text-align: center;
-      margin-top: 22px;
-      font-size: 0.88rem;
-      color: #9CA3AF;
-    }
-
-    .auth-link a {
-      color: #FF4D00;
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    .auth-link a:hover {
-      text-decoration: underline;
-    }
-
-    .success-screen {
-      display: none;
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .success-screen.active {
-      display: block;
-    }
-
-    .success-icon {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: rgba(16,185,129,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 24px;
-      font-size: 2.2rem;
-      animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    @keyframes pop-in {
-      0% { transform: scale(0); }
-      100% { transform: scale(1); }
-    }
-
-    .success-screen h2 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
-    .success-screen p {
-      color: #9CA3AF;
-      font-size: 0.95rem;
-      margin-bottom: 28px;
-    }
-
-    #step-1.hidden,
-    #step-2.hidden {
-      display: none;
-    }
-
-    @media (max-width: 1024px) {
-      .auth-page {
-        grid-template-columns: 1fr;
-      }
-
-      .auth-visual {
-        display: none;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .auth-card {
-        padding: 32px 20px;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
 </head>
 <body>
 
   <div class="auth-page">
 
     <div class="auth-visual">
+      <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1200&q=85" alt="Delivery Scooter" class="auth-visual-img"/>
+      <div class="auth-visual-overlay"></div>
       <div class="auth-visual-content">
-        <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500&h=400&fit=crop" alt="Moto Premium"/>
-        <h2>Rejoignez <span>MotoGp Nabeul</span></h2>
-        <p>Acces illimite a notre flotte premium de motos. Choisissez votre formule et commencez a rouler.</p>
+        <h2>Rejoignez <span>MotoGp</span></h2>
+        <p>Acces illimite a notre flotte premium de scooters. Choisissez votre formule et commencez a livrer.</p>
+        <div class="visual-price">
+          <div>
+            <strong>29 DT</strong>
+            <span>/mois</span>
+          </div>
+        </div>
       </div>
-      <div class="premium-badge">
-        <div class="icon">&#127942;</div>
-        <div class="text"><strong>150+</strong> motos disponibles</div>
+      <div class="auth-visual-badge">
+        <div class="badge-icon">&#127942;</div>
+        <div class="badge-text"><strong>150+</strong> scooters disponibles</div>
       </div>
     </div>
 
-    <div class="auth-form-side">
+    <div class="auth-card-wrapper">
       <div class="auth-card">
 
-        <div class="logo">
-          <a href="index.html">Moto<span>Gp</span></a>
-        </div>
+        <a href="index.html" class="nav-logo" style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:1.5rem;font-weight:900;text-decoration:none;color:var(--text);margin-bottom:24px;">Moto<span>Gp</span></a>
 
         <h2>Creer un compte</h2>
-        <p class="subtitle">Rejoignez la communaute MotoGp Nabeul</p>
+        <p class="auth-subtitle">Rejoignez la communaute MotoGp Nabeul</p>
 
         <div class="steps">
           <div class="step active" id="step-indicator-1">
@@ -485,11 +85,11 @@
                 <option value="vip">VIP - 99 DT/mois</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-primary">Continuer vers le paiement</button>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Continuer vers le paiement</button>
           </form>
         </div>
 
-        <div id="step-2" class="hidden">
+        <div id="step-2" style="display:none;">
           <form id="payment-form">
             <div class="form-group">
               <label>Numero de carte</label>
@@ -521,15 +121,15 @@
               <label for="terms">J'accepte les conditions generales d'utilisation</label>
             </div>
 
-            <button type="submit" class="btn btn-primary">Payer et creer mon compte</button>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Payer et creer mon compte</button>
           </form>
         </div>
 
         <div class="success-screen" id="success-screen">
           <div class="success-icon">&#10003;</div>
           <h2>Compte cree !</h2>
-          <p>Bienvenue sur MotoGp Nabeul. Votre abonnement Premium est actif.</p>
-          <a href="login.html" class="btn btn-primary" style="text-decoration:none;">Se connecter</a>
+          <p>Bienvenue sur MotoGp Nabeul. Votre abonnement est actif.</p>
+          <a href="login.html" class="btn btn-primary" style="text-decoration:none;width:100%;justify-content:center;">Se connecter</a>
         </div>
 
         <p class="auth-link" id="login-link">Deja un compte ? <a href="login.html">Se connecter</a></p>
@@ -537,47 +137,67 @@
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      const planParam = params.get('plan');
-      if (planParam) {
-        const sel = document.querySelector('[name="plan"]');
-        if (sel) sel.value = planParam;
-        updateSummary(planParam);
+    document.addEventListener('DOMContentLoaded', function(){
+      gsap.from('.auth-visual-img', {scale:1.15, opacity:0, duration:1.4, ease:'power3.out'});
+      gsap.from('.auth-visual-content h2', {y:30, opacity:0, duration:.8, delay:.3, ease:'power3.out'});
+      gsap.from('.auth-visual-content p', {y:30, opacity:0, duration:.8, delay:.5, ease:'power3.out'});
+      gsap.from('.visual-price', {y:20, opacity:0, duration:.7, delay:.7, ease:'power3.out'});
+      gsap.from('.auth-visual-badge', {y:20, opacity:0, duration:.7, delay:.9, ease:'power3.out'});
+      gsap.from('.auth-card', {y:30, opacity:0, duration:.8, delay:.2, ease:'power3.out'});
+      gsap.from('.steps', {y:15, opacity:0, duration:.5, delay:.4, ease:'power2.out'});
+      gsap.from('#step-1 .form-group', {y:15, opacity:0, duration:.5, stagger:.07, delay:.5, ease:'power2.out'});
+      gsap.from('#step-1 .btn', {y:10, opacity:0, duration:.5, delay:.9, ease:'power2.out'});
+      gsap.from('.auth-link', {opacity:0, duration:.5, delay:1.1});
+
+      var prices = {essentiel:'29 DT/mois', premium:'59 DT/mois', vip:'99 DT/mois'};
+      var names = {essentiel:'Essentiel', premium:'Premium', vip:'VIP'};
+      var planSelect = document.querySelector('[name="plan"]');
+      var planName = document.getElementById('plan-name');
+      var planPrice = document.getElementById('plan-price');
+
+      var params = new URLSearchParams(window.location.search);
+      var planParam = params.get('plan');
+      if(planParam && planSelect){
+        planSelect.value = planParam;
+        planName.textContent = names[planParam] || 'Premium';
+        planPrice.textContent = prices[planParam] || '59 DT/mois';
       }
 
-      const planSelect = document.querySelector('[name="plan"]');
-      planSelect.addEventListener('change', () => {
-        updateSummary(planSelect.value);
+      if(planSelect) planSelect.addEventListener('change', function(){
+        planName.textContent = names[planSelect.value] || 'Premium';
+        planPrice.textContent = prices[planSelect.value] || '59 DT/mois';
       });
 
-      function updateSummary(plan) {
-        const prices = { essentiel: '29 DT/mois', premium: '59 DT/mois', vip: '99 DT/mois' };
-        const names = { essentiel: 'Essentiel', premium: 'Premium', vip: 'VIP' };
-        document.getElementById('plan-name').textContent = names[plan] || 'Premium';
-        document.getElementById('plan-price').textContent = prices[plan] || '59 DT/mois';
-      }
-
-      document.getElementById('register-form').addEventListener('submit', (e) => {
+      document.getElementById('register-form').addEventListener('submit', function(e){
         e.preventDefault();
-        document.getElementById('step-1').classList.add('hidden');
-        document.getElementById('step-2').classList.remove('hidden');
-
+        document.getElementById('step-1').style.display = 'none';
+        document.getElementById('step-2').style.display = 'block';
         document.getElementById('step-indicator-1').classList.remove('active');
         document.getElementById('step-indicator-1').classList.add('done');
         document.getElementById('step-line-1').classList.add('done');
         document.getElementById('step-indicator-2').classList.add('active');
+
+        gsap.from('#step-2', {y:20, opacity:0, duration:.6, ease:'power2.out'});
+        gsap.from('#step-2 .form-group', {y:12, opacity:0, duration:.4, stagger:.06, delay:.15, ease:'power2.out'});
+        gsap.from('.booking-summary', {y:10, opacity:0, duration:.4, delay:.5});
+        gsap.from('.terms-check', {opacity:0, duration:.3, delay:.6});
       });
 
-      document.getElementById('payment-form').addEventListener('submit', (e) => {
+      document.getElementById('payment-form').addEventListener('submit', function(e){
         e.preventDefault();
-        document.getElementById('step-2').classList.add('hidden');
+        document.getElementById('step-2').style.display = 'none';
         document.getElementById('step-indicator-2').classList.remove('active');
         document.getElementById('step-indicator-2').classList.add('done');
-
-        document.getElementById('success-screen').classList.add('active');
         document.getElementById('login-link').style.display = 'none';
+        document.getElementById('success-screen').classList.add('active');
+        document.querySelector('.steps').style.display = 'none';
+
+        gsap.from('.success-icon', {scale:0, duration:.5, ease:'back.out(1.7)'});
+        gsap.from('.success-screen h2', {y:15, opacity:0, duration:.4, delay:.2});
+        gsap.from('.success-screen p', {y:15, opacity:0, duration:.4, delay:.35});
+        gsap.from('.success-screen .btn', {y:10, opacity:0, duration:.4, delay:.5});
       });
     });
   </script>
