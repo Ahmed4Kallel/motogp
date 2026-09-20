@@ -242,7 +242,19 @@ function openBookingModal(id){
   document.body.appendChild(o);$('#close-modal-btn').addEventListener('click',closeBookingModal);o.addEventListener('click',function(e){if(e.target===o)closeBookingModal()});
   var durSel=$('#booking-duration'),finalSpan=$('#summary-final');
   if(durSel)durSel.addEventListener('change',function(){var d=parseInt(durSel.value);var total=m.price*d;var disc=d>=7?0.15:d>=3?0.1:0;if(finalSpan)finalSpan.textContent=Math.round(total*(1-disc))+' DT'});
-  var form=$('#booking-form');if(form)form.addEventListener('submit',function(e){e.preventDefault();alert('Reservation confirmee pour '+m.name+'!');closeBookingModal()});
+  var form=$('#booking-form');if(form)form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var user=getCurrentUser();
+    if(!user){alert('Connectez-vous pour reserver.');closeBookingModal();window.location.href='login.html';return}
+    var dur=parseInt(durSel.value);
+    var total=m.price*dur;
+    var disc=dur>=7?0.15:dur>=3?0.1:0;
+    total=Math.round(total*(1-disc));
+    var booking={id:'R'+Date.now(),client:user.name,email:user.email,moto:m.name,brand:m.brand,date:$('#booking-start').value,duration:dur,total:total,status:'pending',createdAt:new Date().toISOString()};
+    var bookings=JSON.parse(localStorage.getItem('motogp_bookings')||'[]');
+    bookings.push(booking);localStorage.setItem('motogp_bookings',JSON.stringify(bookings));
+    alert('Reservation confirmee pour '+m.name+'! Total: '+total+' DT');closeBookingModal();
+  });
 }
 function closeBookingModal(){var m=document.getElementById('booking-modal');if(m)m.remove()}
 
@@ -275,7 +287,16 @@ function updateNavAuth(){
   var parent=authBtns.parentElement;
   if(user){
     var dashLink=user.role==='admin'?'dashboard.html':'profile.html';
-    parent.innerHTML='<a href="'+dashLink+'" class="btn btn-outline btn-sm" style="display:flex;align-items:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'+user.name+'</a><a href="#" class="btn btn-primary btn-sm" onclick="logoutUser();return false;">Deconnexion</a>';
+    parent.innerHTML='<a href="'+dashLink+'" class="btn btn-outline btn-sm" style="display:flex;align-items:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'+(user.role==='admin'?'Dashboard':'Mon Profil')+'</a><a href="#" class="btn btn-primary btn-sm" onclick="logoutUser();return false;">Deconnexion</a>';
+  }
+  if(mobileLinks){
+    var mAuth=mobileLinks.querySelector('.btn-outline');
+    if(mAuth){
+      if(user){
+        var dLink=user.role==='admin'?'dashboard.html':'profile.html';
+        mAuth.outerHTML='<a href="'+dLink+'" class="btn btn-outline" style="width:100%;justify-content:center;">'+(user.role==='admin'?'Dashboard':'Mon Profil')+'</a><a href="#" class="btn btn-primary" style="width:100%;justify-content:center;" onclick="logoutUser();return false;">Deconnexion</a>';
+      }
+    }
   }
 }
 function initLoginForm(){

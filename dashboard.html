@@ -392,12 +392,23 @@
 <script>
 var DB={motos:JSON.parse(JSON.stringify(MOTOS)),nextId:100};
 
+function getDBUsers(){return JSON.parse(localStorage.getItem('motogp_users')||'[]')}
+function getDBBookings(){return JSON.parse(localStorage.getItem('motogp_bookings')||'[]')}
+function getDBStats(){
+  var users=getDBUsers(),bookings=getDBBookings();
+  var totalRevenue=bookings.reduce(function(a,b){return a+b.total},0);
+  var pending=bookings.filter(function(b){return b.status==='pending'}).length;
+  return{users:users.length||4,bookings:bookings.length||0,revenue:totalRevenue||45230,pending:pending};
+}
+
 function showDashSection(name,link){
   document.querySelectorAll('.dash-section').forEach(function(s){s.classList.remove('active')});
   var sec=document.getElementById('sec-'+name);if(sec){sec.classList.add('active');animateSection(sec)}
   document.querySelectorAll('#sidebar-nav a').forEach(function(a){a.classList.remove('active')});
   if(link)link.classList.add('active');
   document.querySelector('.sidebar').classList.remove('open');
+  if(name==='users')renderUsersTable();
+  if(name==='reservations')renderReservationsTable();
 }
 
 function animateSection(sec){
@@ -407,12 +418,14 @@ function animateSection(sec){
 }
 
 function animateCounters(){
-  document.querySelectorAll('[data-count]').forEach(function(el){
-    var target=parseInt(el.dataset.count);
+  var stats=getDBStats();
+  var counters=[{el:'[data-count="24"]',val:24},{el:'[data-count="156"]',val:stats.users},{el:'[data-count="89"]',val:stats.bookings||89},{el:'[data-count="45230"]',val:stats.revenue}];
+  counters.forEach(function(c){
+    var el=document.querySelector(c.el);if(!el)return;
     var suffix=el.dataset.suffix||'';
     var obj={val:0};
-    gsap.to(obj,{val:target,duration:1.5,ease:'power2.out',onUpdate:function(){
-      el.textContent=target>=1000?Math.round(obj.val).toLocaleString()+suffix:Math.round(obj.val)+suffix;
+    gsap.to(obj,{val:c.val,duration:1.5,ease:'power2.out',onUpdate:function(){
+      el.textContent=c.val>=1000?Math.round(obj.val).toLocaleString()+suffix:Math.round(obj.val)+suffix;
     }});
   });
 }
@@ -458,15 +471,27 @@ function renderMotosTable(){
 }
 
 function renderUsersTable(){
-  var users=JSON.parse(localStorage.getItem('motogp_users')||'[]');
+  var users=getDBUsers();
   var tbody=document.getElementById('users-tbody');if(!tbody)return;
-  var all=users.length?users:[{firstName:'Ahmed',lastName:'Ben Ali',email:'ahmed@example.com',phone:'+216 55 123 456',plan:'premium'},{firstName:'Fatma',lastName:'Trabelsi',email:'fatma@example.com',phone:'+216 72 789 012',plan:'essentiel'},{firstName:'Mohamed',lastName:'Sahli',email:'mohamed@example.com',phone:'+216 98 345 678',plan:'vip'},{firstName:'Amira',lastName:'Bouazizi',email:'amira@example.com',phone:'+216 22 456 789',plan:'premium'}];
+  var all=users.length?users:[{firstName:'Ahmed',lastName:'Ben Ali',email:'ahmed@example.com',phone:'+216 55 123 456',plan:'premium',createdAt:'2026-09-15'},{firstName:'Fatma',lastName:'Trabelsi',email:'fatma@example.com',phone:'+216 72 789 012',plan:'essentiel',createdAt:'2026-09-16'},{firstName:'Mohamed',lastName:'Sahli',email:'mohamed@example.com',phone:'+216 98 345 678',plan:'vip',createdAt:'2026-09-17'},{firstName:'Amira',lastName:'Bouazizi',email:'amira@example.com',phone:'+216 22 456 789',plan:'premium',createdAt:'2026-09-18'}];
   tbody.innerHTML=all.map(function(u){
     var bc=u.plan==='vip'?'b-vip':u.plan==='premium'?'b-premium':'b-essentiel';
     var av=u.firstName[0]+u.lastName[0];
     var colors=['#E8511A','#3B82F6','#10B981','#8B5CF6','#F59E0B'];
     var bg=colors[Math.abs(u.firstName.charCodeAt(0)+u.lastName.charCodeAt(0))%colors.length];
-    return '<tr><td><div class="user-cell"><div class="user-avatar" style="background:'+bg+'">'+av+'</div><div><strong>'+u.firstName+' '+u.lastName+'</strong></div></div></td><td>'+u.email+'</td><td>'+u.phone+'</td><td><span class="badge '+bc+'">'+u.plan+'</span></td><td><span class="badge b-active">Actif</span></td><td>2026-09</td></tr>';
+    var date=u.createdAt?new Date(u.createdAt).toLocaleDateString('fr-FR'):'2026-09';
+    return '<tr><td><div class="user-cell"><div class="user-avatar" style="background:'+bg+'">'+av+'</div><div><strong>'+u.firstName+' '+u.lastName+'</strong></div></div></td><td>'+u.email+'</td><td>'+u.phone+'</td><td><span class="badge '+bc+'">'+u.plan+'</span></td><td><span class="badge b-active">Actif</span></td><td>'+date+'</td></tr>';
+  }).join('');
+}
+
+function renderReservationsTable(){
+  var bookings=getDBBookings();
+  var tbody=document.querySelector('#sec-reservations tbody');if(!tbody)return;
+  var all=bookings.length?bookings:[{id:'R001',client:'Ahmed Ben Ali',moto:'Honda Vision 110',date:'2026-09-18',duration:3,total:105,status:'confirmed'},{id:'R002',client:'Fatma Trabelsi',moto:'Yamaha NMAX 125',date:'2026-09-19',duration:5,total:225,status:'pending'},{id:'R003',client:'Mohamed Sahli',moto:'SYM Maxsym 400',date:'2026-09-20',duration:7,total:420,status:'confirmed'}];
+  tbody.innerHTML=all.map(function(b){
+    var st=b.status==='confirmed'||b.status==='active'?'b-active':'b-pending';
+    var stl=b.status==='confirmed'||b.status==='active'?'Confirme':'En attente';
+    return '<tr><td>#'+b.id+'</td><td>'+b.client+'</td><td>'+b.moto+'</td><td>'+b.date+'</td><td>'+b.duration+(b.duration>1?' jours':' jour')+'</td><td><strong>'+b.total+' DT</strong></td><td><span class="badge '+st+'">'+stl+'</span></td></tr>';
   }).join('');
 }
 
@@ -498,7 +523,7 @@ function deleteMoto(id){if(confirm('Supprimer ce scooter?')){DB.motos=DB.motos.f
 
 document.getElementById('dash-date').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-renderBarChart();renderDonut();renderMotosTable();renderUsersTable();
+renderBarChart();renderDonut();renderMotosTable();renderUsersTable();renderReservationsTable();
 setTimeout(animateCounters,200);
 setTimeout(function(){animateSection(document.getElementById('sec-stats'))},100);
 </script>

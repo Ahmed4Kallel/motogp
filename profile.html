@@ -1067,5 +1067,55 @@
 
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var user=null;
+  try{user=JSON.parse(localStorage.getItem('motogp_user'))}catch(e){}
+  if(!user){window.location.href='login.html';return}
+  var avatar=user.avatar||'U';
+  var name=user.name||'Utilisateur';
+  var email=user.email||'';
+  var initials=avatar.length>=2?avatar:name.split(' ').map(function(w){return w[0]}).join('');
+  var profAvatar=document.querySelector('.profile-avatar');
+  if(profAvatar)profAvatar.textContent=initials;
+  var profName=document.querySelector('.profile-info h1');
+  if(profName)profName.textContent=name;
+  var profEmail=document.querySelector('.profile-info p');
+  if(profEmail){
+    var emailSpan=profEmail.querySelector('svg');
+    var texts=profEmail.childNodes;
+    for(var i=0;i<texts.length;i++){if(texts[i].nodeType===3&&texts[i].textContent.trim()){texts[i].textContent='\n          '+email+'\n          ';break}}
+  }
+  var bookings=JSON.parse(localStorage.getItem('motogp_bookings')||'[]');
+  var userBookings=bookings.filter(function(b){return b.email===email});
+  var totalSpent=userBookings.reduce(function(a,b){return a+b.total},0);
+  var statCards=document.querySelectorAll('.stat-card-value');
+  if(statCards.length>=4){
+    if(userBookings.length>0)statCards[1].textContent=userBookings.length;
+    if(totalSpent>0)statCards[2].textContent=totalSpent.toLocaleString()+' DT';
+    var activeBookings=userBookings.filter(function(b){return b.status==='pending'||b.status==='active'}).length;
+    if(activeBookings>=0)statCards[3].textContent=activeBookings;
+  }
+  var tbody=document.querySelector('.profile-table tbody');
+  if(tbody&&userBookings.length>0){
+    tbody.innerHTML=userBookings.map(function(b){
+      var motoImg='https://images.unsplash.com/photo-1572195577046-2f25894c06fc?w=200&q=80';
+      var cat='Delivery';
+      if(typeof MOTOS!=='undefined'){var found=MOTOS.find(function(m){return m.name===b.moto});if(found){motoImg=found.img;cat=found.category}}
+      var st=b.status==='confirmed'||b.status==='active'?'status-active':'status-completed';
+      var stl=b.status==='confirmed'||b.status==='active'?'En cours':'Terminee';
+      var d=new Date(b.date);
+      var dateStr=d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+      return '<tr><td><div class="moto-cell"><div class="moto-thumb"><img src="'+motoImg+'" alt="'+b.moto+'"/></div><div><div class="moto-name">'+b.moto+'</div><div style="font-size:var(--fs-xs);color:var(--text-muted);">'+cat+'</div></div></div></td><td>'+dateStr+'</td><td>'+b.duration+(b.duration>1?' jours':' jour')+'</td><td style="font-weight:var(--fw-semibold);color:var(--text);">'+b.total+' DT</td><td><span class="status-badge '+st+'">'+stl+'</span></td></tr>';
+    }).join('');
+  }
+  var logoutBtns=document.querySelectorAll('a[href="index.html"]');
+  logoutBtns.forEach(function(btn){
+    if(btn.textContent.trim()==='Deconnexion'){
+      btn.addEventListener('click',function(e){e.preventDefault();localStorage.removeItem('motogp_user');window.location.href='index.html'});
+    }
+  });
+});
+</script>
 </body>
 </html>
