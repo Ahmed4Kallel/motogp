@@ -84,7 +84,13 @@
   document.addEventListener('DOMContentLoaded', function(){
     try{
       var u=JSON.parse(localStorage.getItem('motogp_user'));
-      if(u){window.location.href=u.role==='admin'?'dashboard.html':'profile.html';return}
+      if(u){
+        var box=document.createElement('div');
+        box.style.cssText='position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(232,81,26,.9);color:#fff;padding:10px 20px;text-align:center;font-size:.85rem;display:flex;align-items:center;justify-content:center;gap:12px;backdrop-filter:blur(8px)';
+        box.innerHTML='<span>Vous etes connecte en tant que <strong>'+u.name+'</strong></span><a href="'+(u.role==='admin'?'dashboard.html':'profile.html')+'" style="color:#fff;text-decoration:underline;font-weight:600">Mon espace</a><button onclick="localStorage.removeItem(\'motogp_user\');location.reload()" style="background:none;border:1px solid rgba(255,255,255,.4);color:#fff;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:.78rem">Changer de compte</button>';
+        document.body.prepend(box);
+        document.querySelector('.auth-page').style.paddingTop='50px';
+      }
     }catch(e){}
     gsap.from('.auth-visual-img', {scale:1.15, opacity:0, duration:1.4, ease:'power3.out'});
     gsap.from('.auth-visual-content h2', {y:30, opacity:0, duration:.8, delay:.3, ease:'power3.out'});
