@@ -135,7 +135,7 @@ function renderList(list){
   var el=$('#restaurant-list');if(!el)return;
   if(!list.length){el.innerHTML='<div class="list-loading"><p>No restaurants found.</p></div>';return}
   el.innerHTML=list.map(function(r){
-    var color=catColor(r.category),dist=r.distance!==null?fmtDist(r.distance):'';
+    var color=catColor(r.category),dist=r.distance!=null?fmtDist(r.distance):'';
     var cuisine=r.cuisine?r.cuisine.split(',')[0].trim():r.category;
     return '<div class="list-item" data-id="'+r.id+'"><div class="list-item-img" style="background:'+color+'20">'+catIcon(r.category)+'</div><div class="list-item-info"><h4>'+esc(r.name)+'</h4><div class="item-cat">'+esc(cuisine)+'</div><div class="item-addr">'+esc(r.address)+'</div><div class="list-item-meta"><span class="list-item-rating">\u2605 '+r.rating+'</span>'+(dist?'<span class="list-item-dist">'+dist+'</span>':'')+'</div></div></div>';
   }).join('');
@@ -281,21 +281,19 @@ function registerUser(data){
 }
 function logoutUser(){localStorage.removeItem('motogp_user');window.location.href='index.html'}
 function updateNavAuth(){
-  var user=getCurrentUser(),navLinks=$('.nav-links'),mobileLinks=$('.mobile-menu');
-  if(!navLinks)return;
-  var authBtns=navLinks.querySelector('.btn-outline');if(!authBtns)return;
-  var parent=authBtns.parentElement;
+  var user=getCurrentUser(),navActions=$('.nav-actions'),mobileLinks=$('.mobile-menu');
+  if(!navActions)return;
+  var authBtns=navActions.querySelector('.btn-outline');if(!authBtns)return;
   if(user){
     var dashLink=user.role==='admin'?'dashboard.html':'profile.html';
-    parent.innerHTML='<a href="'+dashLink+'" class="btn btn-outline btn-sm" style="display:flex;align-items:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'+(user.role==='admin'?'Dashboard':'Mon Profil')+'</a><a href="#" class="btn btn-primary btn-sm" onclick="logoutUser();return false;">Deconnexion</a>';
+    authBtns.outerHTML='<a href="'+dashLink+'" class="btn btn-outline btn-sm" style="display:flex;align-items:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'+(user.role==='admin'?'Dashboard':'Mon Profil')+'</a>';
+    var primaryBtn=navActions.querySelector('.btn-primary');
+    if(primaryBtn){primaryBtn.outerHTML='<a href="#" class="btn btn-primary btn-sm" onclick="logoutUser();return false;">Deconnexion</a>'}
   }
   if(mobileLinks){
     var mAuth=mobileLinks.querySelector('.btn-outline');
-    if(mAuth){
-      if(user){
-        var dLink=user.role==='admin'?'dashboard.html':'profile.html';
-        mAuth.outerHTML='<a href="'+dLink+'" class="btn btn-outline" style="width:100%;justify-content:center;">'+(user.role==='admin'?'Dashboard':'Mon Profil')+'</a><a href="#" class="btn btn-primary" style="width:100%;justify-content:center;" onclick="logoutUser();return false;">Deconnexion</a>';
-      }
+    if(mAuth&&!user){
+      mAuth.outerHTML='<a href="'+(user?dashLink:'login.html')+'" class="btn btn-outline" style="width:100%;justify-content:center;">'+(user?(user.role==='admin'?'Dashboard':'Mon Profil'):'Connexion')+'</a>';
     }
   }
 }

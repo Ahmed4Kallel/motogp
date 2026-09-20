@@ -423,6 +423,7 @@ function animateCounters(){
   counters.forEach(function(c){
     var el=document.querySelector(c.el);if(!el)return;
     var suffix=el.dataset.suffix||'';
+    if(typeof gsap==='undefined'){el.textContent=c.val>=1000?c.val.toLocaleString()+suffix:c.val+suffix;return}
     var obj={val:0};
     gsap.to(obj,{val:c.val,duration:1.5,ease:'power2.out',onUpdate:function(){
       el.textContent=c.val>=1000?Math.round(obj.val).toLocaleString()+suffix:Math.round(obj.val)+suffix;
